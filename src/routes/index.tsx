@@ -7,6 +7,7 @@ import { ResultCard } from "@/components/ResultCard";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
+import { useLang } from "@/lib/lang";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
@@ -41,9 +42,52 @@ const EXAMPLES = [
 ];
 
 const STEPS = [
-  { Icon: MessageSquareText, title: "1. Paste or snap", body: "Add the message, screenshot or link." },
-  { Icon: SearchCheck, title: "2. We check it", body: "AI looks for scam tricks." },
-  { Icon: ShieldCheck, title: "3. You decide", body: "See the verdict before you pay." },
+  { Icon: MessageSquareText, title: "1. Paste or snap", pcmTitle: "1. Paste or snap am", body: "Add the message, screenshot or link.", pcmBody: "Put di message, screenshot or link." },
+  { Icon: SearchCheck, title: "2. We check it", pcmTitle: "2. We go check am", body: "AI looks for scam tricks.", pcmBody: "AI go look for scam tricks." },
+  { Icon: ShieldCheck, title: "3. You decide", pcmTitle: "3. Na you go decide", body: "See the verdict before you pay.", pcmBody: "See di answer before you pay." },
+];
+
+const COMMON_SCAMS = [
+  {
+    title: "Fake credit alert",
+    pcmTitle: "Fake credit alert",
+    works: "They send a fake bank alert so you release goods or money.",
+    pcmWorks: "Dem go send fake bank alert so you go release goods or money.",
+    spot: "Real alerts come from your bank's name, not a phone number. Confirm in your bank app.",
+    pcmSpot: "Real alert dey come from your bank name, no be phone number. Confirm am for your bank app.",
+  },
+  {
+    title: "Job offer fee",
+    pcmTitle: "Job wey need fee",
+    works: "They promise you a job, then ask for a registration or processing fee.",
+    pcmWorks: "Dem go promise you work, then ask you to pay registration or processing fee.",
+    spot: "A real job never asks you to pay before you start.",
+    pcmSpot: "Real work no dey ask you to pay money before you start.",
+  },
+  {
+    title: "BVN/NIN update",
+    pcmTitle: "BVN/NIN update",
+    works: "They say your BVN or NIN is blocked and send a link to 'fix' it.",
+    pcmWorks: "Dem go say your BVN or NIN don block and send link make you 'fix' am.",
+    spot: "Banks and government never ask for BVN or NIN through a link.",
+    pcmSpot: "Bank or government no go ever ask for BVN or NIN through link.",
+  },
+  {
+    title: "Double your money",
+    pcmTitle: "Double your money",
+    works: "They promise to double your money fast if you invest with them.",
+    pcmWorks: "Dem go promise to double your money sharp sharp if you invest with dem.",
+    spot: "Anybody promising sure, quick profit is lying. Real investment has risk.",
+    pcmSpot: "Anybody wey promise sure quick profit dey lie. Real investment get risk.",
+  },
+  {
+    title: "Crypto airdrop",
+    pcmTitle: "Crypto airdrop",
+    works: "They offer free crypto, then ask you to connect your wallet or pay a small fee.",
+    pcmWorks: "Dem go offer free crypto, then ask you to connect your wallet or pay small fee.",
+    spot: "Free money that needs payment first is a scam. Never connect your wallet to strange sites.",
+    pcmSpot: "Free money wey need payment first na scam. No connect your wallet to strange site.",
+  },
 ];
 
 async function compress(file: File): Promise<string> {
