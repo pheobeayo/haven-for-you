@@ -93,16 +93,21 @@ async function callAI(key: string, content: any[]): Promise<{ status: number; te
 
 export const scanContent = createServerFn({ method: "POST" })
   .inputValidator((input: ScanInput) => {
-    const text = (input.text ?? "").slice(0, 6000);
+    const text = (input.text ?? "").slice(0, 5000);
     const link = (input.link ?? "").slice(0, 500);
-    const img = input.imageDataUrl ?? "";
-    if (img && (!img.startsWith("data:image/") || img.length > 4_000_000)) throw new Error("Bad image");
+    let img = input.imageDataUrl ?? "";
+    const badImage = !!img && (!img.startsWith("data:image/") || img.length > 4_000_000);
+    if (badImage) img = "";
     const network = (NETWORKS as readonly string[]).includes(input.network ?? "") ? (input.network as Network) : undefined;
-    return { text, link, imageDataUrl: img, network };
+    return { text, link, imageDataUrl: img, network, badImage };
   })
   .handler(async ({ data }): Promise<ScanResponse> => {
+    if (data.badImage)
+      return { ok: false, code: "bad_input", message: "This picture is too big or not a photo we can read. Please try a JPG or PNG screenshot." };
     if (!data.text.trim() && !data.link.trim() && !data.imageDataUrl)
       return { ok: false, code: "bad_input", message: "Please paste a message, add a screenshot, or enter a link." };
+    if (data.text.trim() && !data.link.trim() && !data.imageDataUrl && data.text.trim().length < 15)
+      return { ok: false, code: "bad_input", message: "This message is too short to check. Please paste the full message." };
     const key = process.env['LOVABLE_API_KEY'];
     if (!key) return { ok: false, code: "ai_error", message: "The checker is not set up yet. Please try later." };
 
