@@ -6,7 +6,7 @@
 
 @theme inline {
   --font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque", "Atkinson Hyperlegible", sans-serif;
+  --font-display: "Poppins", "Atkinson Hyperlegible", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -48,19 +48,19 @@
   --card-foreground: oklch(0.2 0.03 160);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0.03 160);
-  --primary: oklch(0.42 0.12 155);
+  --primary: oklch(0.36 0.07 165);
   --primary-foreground: oklch(0.99 0.01 95);
   --secondary: oklch(0.93 0.03 120);
   --secondary-foreground: oklch(0.22 0.04 160);
   --muted: oklch(0.94 0.015 95);
   --muted-foreground: oklch(0.42 0.03 160);
-  --accent: oklch(0.85 0.15 90);
+  --accent: oklch(0.77 0.16 75);
   --accent-foreground: oklch(0.2 0.03 160);
   --destructive: oklch(0.52 0.2 27);
   --destructive-foreground: oklch(0.99 0 0);
   --border: oklch(0.86 0.02 110);
   --input: oklch(0.8 0.02 110);
-  --ring: oklch(0.42 0.12 155);
+  --ring: oklch(0.36 0.07 165);
 
   --scam: oklch(0.5 0.2 27);
   --scam-soft: oklch(0.95 0.04 27);
