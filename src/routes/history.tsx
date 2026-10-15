@@ -58,7 +58,7 @@ function History() {
                 <span className="block text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</span>
               </span>
             </button>
-            {open === r.id && <ResultCard result={r.result} />}
+            {open === r.id && <ResultCard result={r.result} onCheckAnother={() => nav({ to: "/" })} />}
           </div>
         ))}
       </main>
