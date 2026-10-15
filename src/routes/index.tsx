@@ -237,6 +237,9 @@ function Index() {
                 className="block w-full max-w-[720px] mx-auto rounded-xl border-2 border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
               />
             )}
+            {mode === "text" && text.length > MAX_TEXT && (
+              <p className="mt-2 text-sm text-muted-foreground">{pcm ? "Dis message long well well. We go only check di first 5,000 letters." : "This message is very long. We will only check the first 5,000 characters."}</p>
+            )}
 
             {mode === "link" && (
               <input
