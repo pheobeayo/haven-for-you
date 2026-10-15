@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Camera, Eye, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
+import { Camera, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
@@ -171,10 +171,12 @@ function Index() {
       <main className="container-app space-y-5 md:space-y-8 2xl:space-y-12">
         <div className="grid gap-5 lg:min-h-[80vh] lg:grid-cols-2 lg:items-center lg:gap-12 2xl:gap-16">
         <div className="min-w-0 text-center lg:text-left">
-          <h1 className="text-fluid-hero flex items-center justify-center gap-2 font-extrabold leading-tight lg:justify-start">
-            <Eye className="h-[1em] w-[1em] shrink-0 text-primary" aria-hidden />
-            Shine Your Eye
-          </h1>
+          <div className="flex flex-col items-center gap-3 lg:flex-row lg:items-center lg:gap-5">
+            <img src="/icon-512.png" alt="" aria-hidden className="h-24 w-24 shrink-0 lg:h-32 lg:w-32 2xl:h-40 2xl:w-40" />
+            <h1 className="text-fluid-hero font-extrabold leading-tight text-primary">
+              Shine Your Eye
+            </h1>
+          </div>
           <p className="mt-2 text-lg text-muted-foreground lg:text-xl 2xl:text-2xl">{pcm ? "Check am before you pay or send goods." : "Check before you pay or send goods."}</p>
           <p className="text-fluid-body mt-6 hidden max-w-[65ch] text-muted-foreground lg:block">{pcm ? "No share your PIN, password, OTP or full account number. We no go ever ask you." : "Never share your PIN, password, OTP or full account number. We will never ask for them."}</p>
           <div className="mt-6 hidden flex-nowrap gap-2 lg:flex">
@@ -282,7 +284,7 @@ function Index() {
           <button
             onClick={onCheck}
             disabled={!ready || busy}
-            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-accent text-xl font-extrabold text-accent-foreground disabled:opacity-50"
+            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-primary text-xl font-extrabold text-primary-foreground disabled:opacity-50"
           >
             {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> {pcm ? "We dey check…" : "Checking…"}</>) : pcm ? "Check am" : "Check it"}
           </button>
