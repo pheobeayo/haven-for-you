@@ -32,7 +32,7 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, maxW: number, maxLine
   if (cur) lines.push(cur);
   if (lines.length > maxLines) {
     lines.length = maxLines;
-    let last = lines[maxLines - 1];
+    let last = lines[maxLines - 1] ?? "";
     while (ctx.measureText(last + "…").width > maxW && last.length) last = last.slice(0, -1);
     lines[maxLines - 1] = last.trimEnd() + "…";
   }
