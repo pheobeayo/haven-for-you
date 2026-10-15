@@ -316,20 +316,33 @@ function Index() {
               <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words text-xs">{JSON.stringify(result, null, 2)}</pre>
             </details>
           )}
-          {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">Sign in to save your checks.</p>}
+          {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">{pcm ? "Sign in to save your checks." : "Sign in to save your checks."}</p>}
         </div>
 
         <section aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
-          <h2 className="text-xl font-extrabold">How it works</h2>
+          <h2 className="text-xl font-extrabold">{pcm ? "How e work" : "How it works"}</h2>
           <div className="mt-3 grid grid-cols-3 gap-3 md:gap-6">
-            {STEPS.map(({ Icon, title, body }) => (
+            {STEPS.map(({ Icon, title, pcmTitle, body, pcmBody }) => (
               <div key={title} className="text-center">
                 <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
                   <Icon className="h-6 w-6" aria-hidden />
                 </div>
-                <p className="mt-2 text-sm font-bold leading-tight md:text-lg">{title}</p>
-                <p className="mt-1 text-xs leading-snug text-muted-foreground md:text-base">{body}</p>
+                <p className="mt-2 text-sm font-bold leading-tight md:text-lg">{pcm ? pcmTitle : title}</p>
+                <p className="mt-1 text-xs leading-snug text-muted-foreground md:text-base">{pcm ? pcmBody : body}</p>
               </div>
+            ))}
+          </div>
+        </section>
+
+        <section aria-label="Common scams in Nigeria">
+          <h2 className="text-xl font-extrabold">{pcm ? "Common scams for Nigeria" : "Common scams in Nigeria"}</h2>
+          <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {COMMON_SCAMS.map((s) => (
+              <article key={s.title} className="rounded-2xl border-2 border-foreground bg-card p-4">
+                <h3 className="text-lg font-extrabold">{pcm ? s.pcmTitle : s.title}</h3>
+                <p className="mt-2 text-base leading-snug">{pcm ? s.pcmWorks : s.works}</p>
+                <p className="mt-2 border-l-4 border-primary pl-2 text-base font-semibold leading-snug text-muted-foreground">{pcm ? s.pcmSpot : s.spot}</p>
+              </article>
             ))}
           </div>
         </section>
