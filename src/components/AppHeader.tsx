@@ -31,7 +31,7 @@ export function AppHeader() {
           to={user ? "/history" : "/auth"}
           className="flex min-h-12 shrink-0 items-center rounded-full border-2 border-foreground px-4 text-base font-bold"
         >
-          {user ? (lang === "pcm" ? "My checks" : "My checks") : lang === "pcm" ? "Sign in" : "Sign in"}
+          {user ? "My checks" : "Sign in"}
         </Link>
       </div>
     </header>

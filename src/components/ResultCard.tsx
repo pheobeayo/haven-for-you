@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { AlertTriangle, CheckCircle2, OctagonX } from "lucide-react";
 import type { ScanResult } from "@/lib/scan.functions";
+import { useLang } from "@/lib/lang";
 
 const V = {
   scam: { word: "Likely scam", pcm: "E be like scam", Icon: OctagonX, bg: "bg-scam", soft: "bg-scam-soft", text: "text-scam" },
@@ -9,7 +9,8 @@ const V = {
 } as const;
 
 export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onCheckAnother: () => void }) {
-  const [pcm, setPcm] = useState(false);
+  const { lang } = useLang();
+  const pcm = lang === "pcm";
   const v = V[result.verdict];
   return (
     <section aria-live="polite" className="rounded-2xl border-2 border-foreground bg-card lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
@@ -41,25 +42,12 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
       <div className="space-y-5 p-4 lg:p-6">
         <h2 className="font-display text-2xl font-extrabold leading-tight">{result.scam_type}</h2>
 
-        <div className="flex gap-2" role="group" aria-label="Language">
-          {[["English", false], ["Pidgin", true]].map(([label, val]) => (
-            <button
-              key={String(label)}
-              onClick={() => setPcm(val as boolean)}
-              aria-pressed={pcm === val}
-              className={`tap flex-1 rounded-xl border-2 border-foreground text-base font-bold ${pcm === val ? "bg-foreground text-background" : "bg-card"}`}
-            >
-              {label as string}
-            </button>
-          ))}
-        </div>
-
         <div className="hidden grid-cols-2 gap-2 lg:grid">
           <button
             onClick={onCheckAnother}
             className="tap rounded-xl border-2 border-foreground bg-secondary text-base font-bold text-secondary-foreground"
           >
-            Check another
+            {pcm ? "Check another one" : "Check another"}
           </button>
           <button
             disabled
@@ -67,7 +55,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
             title="Coming soon"
             className="tap rounded-xl border-2 border-input bg-muted text-base font-bold text-muted-foreground opacity-60"
           >
-            Share warning
+            {pcm ? "Share warning" : "Share warning"}
           </button>
         </div>
       </div>
@@ -123,7 +111,9 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
         </div>
 
         <p className="rounded-xl bg-muted p-3 text-base">
-          This is an AI opinion, not a guarantee. When in doubt, confirm with your bank app directly.
+          {pcm
+            ? "Na AI talk am, no be guarantee. If you no sure, confirm am with your bank app directly."
+            : "This is an AI opinion, not a guarantee. When in doubt, confirm with your bank app directly."}
         </p>
 
         <div className="grid grid-cols-2 gap-2 lg:hidden">
@@ -131,7 +121,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
             onClick={onCheckAnother}
             className="tap rounded-xl border-2 border-foreground bg-secondary text-base font-bold text-secondary-foreground"
           >
-            Check another
+            {pcm ? "Check another one" : "Check another"}
           </button>
           <button
             disabled
