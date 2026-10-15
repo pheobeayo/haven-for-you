@@ -230,7 +230,7 @@ function Index() {
             )}
             {mode === "link" && isWallet && (
               <fieldset className="mt-3">
-                <legend className="text-base font-bold">This looks like a wallet address. Which network?</legend>
+                <legend className="text-base font-bold">{pcm ? "Dis one look like wallet address. Which network?" : "This looks like a wallet address. Which network?"}</legend>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   {NETWORKS.map((n) => (
                     <button
@@ -270,7 +270,7 @@ function Index() {
                 ) : (
                   <button onClick={() => fileRef.current?.click()} className="flex min-h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-foreground bg-background text-lg font-bold">
                     <Camera className="h-10 w-10" aria-hidden />
-                    Choose screenshot
+                    {pcm ? "Choose screenshot" : "Choose screenshot"}
                   </button>
                 )}
               </div>
