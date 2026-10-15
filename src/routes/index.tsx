@@ -90,6 +90,9 @@ const COMMON_SCAMS = [
   },
 ];
 
+const MAX_TEXT = 5000;
+const MAX_FILE = 15 * 1024 * 1024;
+
 async function compress(file: File): Promise<string> {
   const img = await createImageBitmap(file);
   const max = 1280;
@@ -119,15 +122,28 @@ function Index() {
   const resultRef = useRef<HTMLDivElement>(null);
 
   const ready = mode === "text" ? text.trim() : mode === "link" ? link.trim() && (!isWallet || network) : image;
+  const busyRef = useRef(false);
+  const [canRetry, setCanRetry] = useState(false);
 
   async function onCheck() {
+    if (busyRef.current) return;
+    setCanRetry(false);
+    if (mode === "text" && text.trim().length < 15) {
+      setError(pcm ? "Dis message too short to check. Abeg paste the full message." : "This message is too short to check. Please paste the full message.");
+      return;
+    }
+    busyRef.current = true;
     setBusy(true);
     setError(null);
     setResult(null);
     try {
-      const payload = mode === "text" ? { text } : mode === "link" ? { link: link.trim(), network: isWallet ? network! : undefined } : { imageDataUrl: image! };
+      const sendText = text.slice(0, MAX_TEXT);
+      const payload = mode === "text" ? { text: sendText } : mode === "link" ? { link: link.trim(), network: isWallet ? network! : undefined } : { imageDataUrl: image! };
       const r = await scan({ data: payload as { text?: string; link?: string; imageDataUrl?: string; network?: string } });
-      if (!r.ok) return setError(r.message);
+      if (!r.ok) {
+        setCanRetry(r.code !== "bad_input");
+        return setError(r.message);
+      }
       setResult(r.result);
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
       if (user) {
@@ -143,8 +159,10 @@ function Index() {
         });
       }
     } catch {
-      setError("Network problem. Check your data and try again.");
+      setCanRetry(true);
+      setError(pcm ? "Network wahala. Check your data and try again." : "Network problem. Check your data and try again.");
     } finally {
+      busyRef.current = false;
       setBusy(false);
     }
   }
