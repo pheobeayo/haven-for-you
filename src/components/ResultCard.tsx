@@ -74,6 +74,21 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
       </div>
 
       <div className="min-w-0 space-y-5 p-4 lg:p-6 [&_p]:max-w-[65ch]">
+        {result.onchain && result.onchain.length > 0 && (
+          <div>
+            <h3 className="mb-2 text-xl font-bold">{pcm ? "Wetin blockchain show" : "On-chain checks"}</h3>
+            <ul className="divide-y-2 divide-border rounded-xl border-2 border-foreground">
+              {result.onchain.map((c) => (
+                <li key={c.label} className="flex items-center justify-between gap-3 p-3">
+                  <span className="min-w-0 text-base">{c.label}</span>
+                  <span className={`shrink-0 rounded-full px-3 py-1 text-base font-bold ${c.bad ? "bg-scam text-verdict-foreground" : "bg-muted"}`}>{c.value}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-1 text-sm text-muted-foreground">Data from GoPlus Security.</p>
+          </div>
+        )}
+
         {result.red_flags.length > 0 && (
           <div>
             <h3 className="mb-2 text-xl font-bold">{pcm ? "Wahala we see" : "Red flags we found"}</h3>
