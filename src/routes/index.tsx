@@ -276,8 +276,21 @@ function Index() {
                   className="hidden"
                   onChange={async (e) => {
                     const f = e.target.files?.[0];
-                    if (f) setImage(await compress(f).catch(() => null));
                     e.target.value = "";
+                    if (!f) return;
+                    setError(null);
+                    setCanRetry(false);
+                    if (!f.type.startsWith("image/")) {
+                      setImage(null);
+                      return setError(pcm ? "Dis file no be picture. Abeg choose JPG or PNG screenshot." : "This file is not a picture. Please choose a JPG or PNG screenshot.");
+                    }
+                    if (f.size > MAX_FILE) {
+                      setImage(null);
+                      return setError(pcm ? "Dis picture too big. Abeg choose smaller screenshot." : "This picture is too big. Please choose a smaller screenshot.");
+                    }
+                    const img = await compress(f).catch(() => null);
+                    setImage(img);
+                    if (!img) setError(pcm ? "We no fit open dis picture. Abeg try JPG or PNG screenshot." : "We could not open this picture. Please try a JPG or PNG screenshot.");
                   }}
                 />
                 {image ? (
@@ -325,6 +338,16 @@ function Index() {
         {error && (
           <div role="alert" className="rounded-2xl border-2 border-careful bg-careful-soft p-4 text-lg">
             {error}
+            {canRetry && (
+              <button
+                onClick={onCheck}
+                disabled={busy}
+                className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-primary text-lg font-extrabold text-primary-foreground disabled:opacity-50"
+              >
+                {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
+                {pcm ? "Try again" : "Try again"}
+              </button>
+            )}
           </div>
         )}
 
