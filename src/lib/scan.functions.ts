@@ -14,7 +14,9 @@ export type ScanResponse =
   | { ok: true; result: ScanResult }
   | { ok: false; code: "rate_limit" | "no_credits" | "bad_input" | "ai_error"; message: string };
 
-type ScanInput = { text?: string; link?: string; imageDataUrl?: string };
+import { checkUrl, detectKind, explorerFor, NETWORKS, type Network } from "./link-checks";
+
+type ScanInput = { text?: string; link?: string; imageDataUrl?: string; network?: string };
 
 const SYSTEM = `You are a fraud analyst who specialises in scams targeting Nigerians. Analyse the message and decide if it is a scam.
 Know these common patterns: fake bank credit alerts and 'wrong transfer, please reverse' requests; jobs or scholarships asking for a processing or registration fee; 'double your money' investment and Ponzi schemes; loan offers needing an upfront fee; impersonation of banks, CBN, EFCC, NIMC or telcos asking to 'update BVN/NIN'; requests for OTP, PIN or BVN; romance and 'stranded abroad' requests; fake crypto airdrops, giveaways and wallet-connect links.
@@ -93,7 +95,8 @@ export const scanContent = createServerFn({ method: "POST" })
     const link = (input.link ?? "").slice(0, 500);
     const img = input.imageDataUrl ?? "";
     if (img && (!img.startsWith("data:image/") || img.length > 4_000_000)) throw new Error("Bad image");
-    return { text, link, imageDataUrl: img };
+    const network = (NETWORKS as readonly string[]).includes(input.network ?? "") ? (input.network as Network) : undefined;
+    return { text, link, imageDataUrl: img, network };
   })
   .handler(async ({ data }): Promise<ScanResponse> => {
     if (!data.text.trim() && !data.link.trim() && !data.imageDataUrl)
@@ -104,7 +107,17 @@ export const scanContent = createServerFn({ method: "POST" })
     const content: any[] = [];
     let prompt = "Check this for scams.\n";
     if (data.text.trim()) prompt += `\nMessage:\n"""${data.text}"""\n`;
-    if (data.link.trim()) prompt += `\nLink or crypto address:\n${data.link}\n`;
+    if (data.link.trim()) {
+      const kind = detectKind(data.link);
+      if (kind === "wallet") {
+        if (!data.network) return { ok: false, code: "bad_input", message: "Please choose the network for this address." };
+        const ex = explorerFor(data.network);
+        prompt += `\nCrypto wallet or token address: ${data.link.trim()}\nNetwork: ${data.network}\nYou cannot look this address up. Judge from what you know (e.g. known scam patterns, fake token contracts). Usually say "suspicious" unless there is a clear reason, and in what_to_do tell the user exactly what to check on ${ex}: search the address, see if it is a verified contract, how old it is, number of holders/transactions, and any "phish/hack" warning label. Never tell them to connect their wallet. red_flags evidence should quote the address or network.\n`;
+      } else {
+        const findings = kind === "url" ? checkUrl(data.link) : [];
+        prompt += `\nLink (we did NOT open it): ${data.link.trim()}\nAutomatic checks found: ${findings.length ? findings.map((f) => "- " + f).join("\n") : "nothing unusual"}\nUse these findings as red flags where relevant, quoting the exact part of the link as evidence. Do not claim to have visited the site.\n`;
+      }
+    }
     if (data.imageDataUrl) prompt += `\nA screenshot is attached. Read it carefully.\n`;
     content.push({ type: "text", text: prompt });
     if (data.imageDataUrl) content.push({ type: "image_url", image_url: { url: data.imageDataUrl } });
