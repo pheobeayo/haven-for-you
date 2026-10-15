@@ -85,7 +85,7 @@ function Index() {
       setResult(r.result);
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
       if (user) {
-        const preview = mode === "text" ? text.slice(0, 140) : mode === "link" ? link.slice(0, 140) : "Screenshot";
+        const preview = mode === "text" ? text.slice(0, 120) : mode === "link" ? link.slice(0, 120) : "Screenshot";
         await supabase.from("scans").insert({
           user_id: user.id,
           input_kind: mode,
