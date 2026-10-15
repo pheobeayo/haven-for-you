@@ -97,7 +97,7 @@ export const scanContent = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<ScanResponse> => {
     if (!data.text.trim() && !data.link.trim() && !data.imageDataUrl)
       return { ok: false, code: "bad_input", message: "Please paste a message, add a screenshot, or enter a link." };
-    const key = process.env.LOVABLE_API_KEY;
+    const key = process.env['LOVABLE_API_KEY'];
     if (!key) return { ok: false, code: "ai_error", message: "The checker is not set up yet. Please try later." };
 
     const content: any[] = [];
