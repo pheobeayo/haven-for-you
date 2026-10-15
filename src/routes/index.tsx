@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Camera, Eye, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
+import { Camera, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
@@ -284,7 +284,7 @@ function Index() {
           <button
             onClick={onCheck}
             disabled={!ready || busy}
-            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-accent text-xl font-extrabold text-accent-foreground disabled:opacity-50"
+            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-primary text-xl font-extrabold text-primary-foreground disabled:opacity-50"
           >
             {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> {pcm ? "We dey check…" : "Checking…"}</>) : pcm ? "Check am" : "Check it"}
           </button>
