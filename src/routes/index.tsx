@@ -222,7 +222,7 @@ function Index() {
 
         </div>
 
-        <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:justify-center md:grid md:grid-cols-3 lg:hidden">
+        <div className="flex flex-wrap justify-center gap-2 md:grid md:grid-cols-3 lg:hidden">
           {EXAMPLES.map((ex) => (
             <button
               key={ex.label}
