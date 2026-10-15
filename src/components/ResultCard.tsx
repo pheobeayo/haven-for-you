@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle2, OctagonX } from "lucide-react";
 import type { ScanResult } from "@/lib/scan.functions";
 import { useLang } from "@/lib/lang";
+import { ShareWarning } from "@/components/ShareWarning";
 
 const V = {
   scam: { word: "Likely scam", pcm: "E be like scam", Icon: OctagonX, bg: "bg-scam", soft: "bg-scam-soft", text: "text-scam" },
@@ -49,14 +50,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
           >
             {pcm ? "Check another one" : "Check another"}
           </button>
-          <button
-            disabled
-            aria-disabled="true"
-            title="Coming soon"
-            className="tap rounded-xl border-2 border-input bg-muted text-base font-bold text-muted-foreground opacity-60"
-          >
-            {pcm ? "Share warning" : "Share warning"}
-          </button>
+          <ShareWarning result={result} />
         </div>
       </div>
       </div>
@@ -123,14 +117,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
           >
             {pcm ? "Check another one" : "Check another"}
           </button>
-          <button
-            disabled
-            aria-disabled="true"
-            title="Coming soon"
-            className="tap rounded-xl border-2 border-input bg-muted text-base font-bold text-muted-foreground opacity-60"
-          >
-            Share warning
-          </button>
+          <ShareWarning result={result} />
         </div>
       </div>
     </section>
