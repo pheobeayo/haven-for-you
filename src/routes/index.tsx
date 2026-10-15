@@ -100,6 +100,15 @@ function Index() {
     }
   }
 
+  function onCheckAnother() {
+    setResult(null);
+    setError(null);
+    setText("");
+    setLink("");
+    setImage(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   const tabs: { id: Mode; label: string; Icon: typeof Camera }[] = [
     { id: "text", label: "Paste message", Icon: MessageSquareText },
     { id: "photo", label: "Upload screenshot", Icon: Camera },
@@ -217,7 +226,7 @@ function Index() {
         )}
 
         <div ref={resultRef}>
-          {result && <ResultCard result={result} />}
+          {result && <ResultCard result={result} onCheckAnother={onCheckAnother} />}
           {result && (
             <details className="mt-3 rounded-2xl border-2 border-foreground bg-card p-4">
               <summary className="tap flex items-center text-base font-bold">Raw result (for testing)</summary>
