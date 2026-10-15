@@ -9,11 +9,13 @@ export type ScanResult = {
   what_to_do: string[];
   explanation_en: string;
   explanation_pcm: string;
+  onchain?: OnchainCheck[];
 };
 export type ScanResponse =
   | { ok: true; result: ScanResult }
   | { ok: false; code: "rate_limit" | "no_credits" | "bad_input" | "ai_error"; message: string };
 
+import { goplusToken, type OnchainCheck } from "./goplus";
 import { checkUrl, detectKind, explorerFor, NETWORKS, type Network } from "./link-checks";
 
 type ScanInput = { text?: string; link?: string; imageDataUrl?: string; network?: string };
@@ -105,6 +107,7 @@ export const scanContent = createServerFn({ method: "POST" })
     if (!key) return { ok: false, code: "ai_error", message: "The checker is not set up yet. Please try later." };
 
     const content: any[] = [];
+    let onchain: OnchainCheck[] | null = null;
     let prompt = "Check this for scams.\n";
     if (data.text.trim()) prompt += `\nMessage:\n"""${data.text}"""\n`;
     if (data.link.trim()) {
@@ -112,6 +115,9 @@ export const scanContent = createServerFn({ method: "POST" })
       if (kind === "wallet") {
         if (!data.network) return { ok: false, code: "bad_input", message: "Please choose the network for this address." };
         const ex = explorerFor(data.network);
+        onchain = await goplusToken(data.link.trim(), data.network);
+        if (onchain) prompt += `\nOn-chain facts from GoPlus token security (treat as facts, quote them as evidence; a honeypot, owner-changeable balances, or tax above 10% are serious red flags):\n${onchain.map((c) => `- ${c.label}: ${c.value}`).join("\n")}\n`;
+        else prompt += `\nNo on-chain security data was available for this address.\n`;
         prompt += `\nCrypto wallet or token address: ${data.link.trim()}\nNetwork: ${data.network}\nYou cannot look this address up. Judge from what you know (e.g. known scam patterns, fake token contracts). Usually say "suspicious" unless there is a clear reason, and in what_to_do tell the user exactly what to check on ${ex}: search the address, see if it is a verified contract, how old it is, number of holders/transactions, and any "phish/hack" warning label. Never tell them to connect their wallet. red_flags evidence should quote the address or network.\n`;
       } else {
         const findings = kind === "url" ? checkUrl(data.link) : [];
@@ -134,7 +140,7 @@ export const scanContent = createServerFn({ method: "POST" })
         return { ok: false, code: "ai_error", message: "We could not check this right now. Please try again." };
       }
       const v = validate(r.text);
-      if (v) return { ok: true, result: v };
+      if (v) return { ok: true, result: onchain ? { ...v, onchain } : v };
       console.error("Invalid AI JSON", r.text.slice(0, 300));
     }
     return { ok: false, code: "ai_error", message: "Sorry, we could not read the answer. Please try again." };
