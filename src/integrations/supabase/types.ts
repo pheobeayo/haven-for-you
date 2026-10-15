@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      scans: {
+        Row: {
+          created_at: string
+          id: string
+          input_kind: string
+          input_preview: string
+          result: Json
+          risk_score: number
+          scam_type: string
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input_kind: string
+          input_preview?: string
+          result: Json
+          risk_score: number
+          scam_type?: string
+          user_id: string
+          verdict: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input_kind?: string
+          input_preview?: string
+          result?: Json
+          risk_score?: number
+          scam_type?: string
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
