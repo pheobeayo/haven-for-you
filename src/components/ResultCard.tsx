@@ -12,8 +12,9 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
   const [pcm, setPcm] = useState(false);
   const v = V[result.verdict];
   return (
-    <section aria-live="polite" className="overflow-hidden rounded-2xl border-2 border-foreground bg-card">
-      <div className={`${v.bg} p-5 text-verdict-foreground`}>
+    <section aria-live="polite" className="rounded-2xl border-2 border-foreground bg-card lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start">
+      <div className="min-w-0 lg:sticky lg:top-4 lg:border-r-2 lg:border-foreground">
+      <div className={`${v.bg} rounded-t-[14px] lg:rounded-tr-none p-5 2xl:p-8 text-verdict-foreground`}>
         <div className="flex items-center gap-3">
           <v.Icon className="h-12 w-12 shrink-0" aria-hidden />
           <p className="font-display text-4xl font-extrabold leading-tight">{pcm ? v.pcm : v.word}</p>
@@ -37,7 +38,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
         </div>
       </div>
 
-      <div className="space-y-5 p-4">
+      <div className="space-y-5 p-4 lg:p-6">
         <h2 className="font-display text-2xl font-extrabold leading-tight">{result.scam_type}</h2>
 
         <div className="flex gap-2" role="group" aria-label="Language">
@@ -53,6 +54,26 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
           ))}
         </div>
 
+        <div className="hidden grid-cols-2 gap-2 lg:grid">
+          <button
+            onClick={onCheckAnother}
+            className="tap rounded-xl border-2 border-foreground bg-secondary text-base font-bold text-secondary-foreground"
+          >
+            Check another
+          </button>
+          <button
+            disabled
+            aria-disabled="true"
+            title="Coming soon"
+            className="tap rounded-xl border-2 border-input bg-muted text-base font-bold text-muted-foreground opacity-60"
+          >
+            Share warning
+          </button>
+        </div>
+      </div>
+      </div>
+
+      <div className="min-w-0 space-y-5 p-4 lg:p-6 [&_p]:max-w-[65ch]">
         {result.red_flags.length > 0 && (
           <div>
             <h3 className="mb-2 text-xl font-bold">{pcm ? "Wahala we see" : "Red flags we found"}</h3>
@@ -90,7 +111,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
           This is an AI opinion, not a guarantee. When in doubt, confirm with your bank app directly.
         </p>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 lg:hidden">
           <button
             onClick={onCheckAnother}
             className="tap rounded-xl border-2 border-foreground bg-secondary text-base font-bold text-secondary-foreground"
