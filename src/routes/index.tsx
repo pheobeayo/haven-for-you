@@ -104,6 +104,8 @@ async function compress(file: File): Promise<string> {
 function Index() {
   const scan = useServerFn(scanContent);
   const { user } = useAuth();
+  const { lang } = useLang();
+  const pcm = lang === "pcm";
   const [mode, setMode] = useState<Mode>("text");
   const [text, setText] = useState("");
   const [link, setLink] = useState("");
@@ -158,9 +160,9 @@ function Index() {
   }
 
   const tabs: { id: Mode; label: string; Icon: typeof Camera }[] = [
-    { id: "text", label: "Paste message", Icon: MessageSquareText },
-    { id: "photo", label: "Upload screenshot", Icon: Camera },
-    { id: "link", label: "Link or wallet", Icon: Link2 },
+    { id: "text", label: pcm ? "Paste message" : "Paste message", Icon: MessageSquareText },
+    { id: "photo", label: pcm ? "Upload screenshot" : "Upload screenshot", Icon: Camera },
+    { id: "link", label: pcm ? "Link or wallet" : "Link or wallet", Icon: Link2 },
   ];
 
   return (
