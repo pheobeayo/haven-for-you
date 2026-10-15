@@ -175,8 +175,8 @@ function Index() {
             <Eye className="h-[1em] w-[1em] shrink-0 text-primary" aria-hidden />
             Shine Your Eye
           </h1>
-          <p className="mt-2 text-lg text-muted-foreground lg:text-xl 2xl:text-2xl">Check before you pay or send goods.</p>
-          <p className="text-fluid-body mt-6 hidden max-w-[65ch] text-muted-foreground lg:block">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
+          <p className="mt-2 text-lg text-muted-foreground lg:text-xl 2xl:text-2xl">{pcm ? "Check am before you pay or send goods." : "Check before you pay or send goods."}</p>
+          <p className="text-fluid-body mt-6 hidden max-w-[65ch] text-muted-foreground lg:block">{pcm ? "No share your PIN, password, OTP or full account number. We no go ever ask you." : "Never share your PIN, password, OTP or full account number. We will never ask for them."}</p>
           <div className="mt-6 hidden flex-nowrap gap-2 lg:flex">
           {EXAMPLES.map((ex) => (
             <button
@@ -213,7 +213,7 @@ function Index() {
                 onChange={(e) => setText(e.target.value)}
                 rows={6}
                 aria-label="Paste the message or alert"
-                placeholder="Paste the SMS, WhatsApp message or email here"
+                placeholder={pcm ? "Paste di SMS, WhatsApp message or email for here" : "Paste the SMS, WhatsApp message or email here"}
                 className="block w-full max-w-[720px] mx-auto rounded-xl border-2 border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
               />
             )}
