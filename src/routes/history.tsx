@@ -40,17 +40,18 @@ function History() {
   return (
     <div className="min-h-screen pb-12">
       <AppHeader />
-      <main className="mx-auto max-w-xl space-y-4 px-4">
+      <main className="container-app space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-extrabold">My checks</h1>
-          <button onClick={async () => { await supabase.auth.signOut(); nav({ to: "/" }); }} className="text-base font-bold underline">Sign out</button>
+          <button onClick={async () => { await supabase.auth.signOut(); nav({ to: "/" }); }} className="min-h-12 text-base font-bold underline">Sign out</button>
         </div>
         {rows === null && <p className="text-lg">Loading…</p>}
         {rows?.length === 0 && (
           <p className="text-lg">No checks yet. <Link to="/" className="font-bold underline">Check something</Link></p>
         )}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {rows?.map((r) => (
-          <div key={r.id} className="space-y-2">
+          <div key={r.id} className={`min-w-0 space-y-2 ${open === r.id ? "md:col-span-full" : ""}`}>
             <button onClick={() => setOpen(open === r.id ? null : r.id)} className="flex w-full items-center gap-3 rounded-2xl border-2 border-foreground bg-card p-3 text-left">
               <span className={`${chip[r.verdict]} shrink-0 rounded-full px-3 py-1 text-base font-bold text-verdict-foreground`}>{word[r.verdict]}</span>
               <span className="min-w-0 flex-1">
@@ -61,6 +62,7 @@ function History() {
             {open === r.id && <ResultCard result={r.result} onCheckAnother={() => nav({ to: "/" })} />}
           </div>
         ))}
+        </div>
       </main>
     </div>
   );

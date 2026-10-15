@@ -118,16 +118,29 @@ function Index() {
   return (
     <div className="min-h-screen pb-12">
       <AppHeader />
-      <main className="mx-auto max-w-xl space-y-5 px-4">
-        <div className="text-center">
-          <h1 className="flex items-center justify-center gap-2 text-4xl font-extrabold leading-tight">
-            <Eye className="h-9 w-9 shrink-0 text-primary" aria-hidden />
+      <main className="container-app space-y-5 md:space-y-8 2xl:space-y-12">
+        <div className="grid gap-5 lg:min-h-[80vh] lg:grid-cols-2 lg:items-center lg:gap-12 2xl:gap-16">
+        <div className="min-w-0 text-center lg:text-left">
+          <h1 className="text-fluid-hero flex items-center justify-center gap-2 font-extrabold leading-tight lg:justify-start">
+            <Eye className="h-[1em] w-[1em] shrink-0 text-primary" aria-hidden />
             Shine Your Eye
           </h1>
-          <p className="mt-2 text-lg text-muted-foreground">Check before you pay or send goods.</p>
+          <p className="mt-2 text-lg text-muted-foreground lg:text-xl 2xl:text-2xl">Check before you pay or send goods.</p>
+          <p className="text-fluid-body mt-6 hidden max-w-[65ch] text-muted-foreground lg:block">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
+          <div className="mt-6 hidden flex-nowrap gap-2 lg:flex">
+          {EXAMPLES.map((ex) => (
+            <button
+              key={ex.label}
+              onClick={() => { setMode("text"); setText(ex.text); setError(null); }}
+              className="tap whitespace-nowrap rounded-full border-2 border-foreground bg-secondary px-4 text-base font-bold text-secondary-foreground"
+            >
+              {ex.label}
+            </button>
+          ))}
+          </div>
         </div>
 
-        <div className="rounded-2xl border-2 border-foreground bg-card p-3 shadow-[4px_4px_0_0_var(--foreground)]">
+        <div className="min-w-0 rounded-2xl border-2 border-foreground bg-card p-3 md:p-4 2xl:p-6 shadow-[4px_4px_0_0_var(--foreground)]">
           <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="What do you want to check?">
             {tabs.map(({ id, label, Icon }) => (
               <button
@@ -151,7 +164,7 @@ function Index() {
                 rows={6}
                 aria-label="Paste the message or alert"
                 placeholder="Paste the SMS, WhatsApp message or email here"
-                className="w-full rounded-xl border-2 border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
+                className="block w-full max-w-[720px] mx-auto rounded-xl border-2 border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
               />
             )}
 
@@ -196,7 +209,7 @@ function Index() {
             )}
           </div>
 
-          <p className="mt-3 text-sm text-muted-foreground">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
+          <p className="mt-3 text-sm text-muted-foreground lg:hidden">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
 
           <button
             onClick={onCheck}
@@ -207,7 +220,9 @@ function Index() {
           </button>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2">
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:justify-center md:grid md:grid-cols-3 lg:hidden">
           {EXAMPLES.map((ex) => (
             <button
               key={ex.label}
@@ -236,16 +251,16 @@ function Index() {
           {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">Sign in to save your checks.</p>}
         </div>
 
-        <section aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4">
+        <section aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
           <h2 className="text-xl font-extrabold">How it works</h2>
-          <div className="mt-3 grid grid-cols-3 gap-3">
+          <div className="mt-3 grid grid-cols-3 gap-3 md:gap-6">
             {STEPS.map(({ Icon, title, body }) => (
               <div key={title} className="text-center">
                 <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
                   <Icon className="h-6 w-6" aria-hidden />
                 </div>
-                <p className="mt-2 text-sm font-bold leading-tight">{title}</p>
-                <p className="mt-1 text-xs leading-snug text-muted-foreground">{body}</p>
+                <p className="mt-2 text-sm font-bold leading-tight md:text-lg">{title}</p>
+                <p className="mt-1 text-xs leading-snug text-muted-foreground md:text-base">{body}</p>
               </div>
             ))}
           </div>

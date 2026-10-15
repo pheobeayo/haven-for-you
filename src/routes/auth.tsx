@@ -51,7 +51,7 @@ function AuthPage() {
   return (
     <div className="min-h-screen pb-12">
       <AppHeader />
-      <main className="mx-auto max-w-md space-y-5 px-4">
+      <main className="container-app max-w-md space-y-5">
         <h1 className="text-3xl font-extrabold">{signup ? "Create account" : "Sign in"}</h1>
         <p className="text-lg text-muted-foreground">Only needed to save your checks. Checking is always free without it.</p>
         <button onClick={google} className="tap w-full rounded-2xl border-2 border-foreground bg-card text-lg font-bold">Continue with Google</button>
