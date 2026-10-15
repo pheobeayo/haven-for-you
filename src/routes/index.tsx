@@ -80,7 +80,7 @@ function Index() {
     setResult(null);
     try {
       const payload = mode === "text" ? { text } : mode === "link" ? { link: link.trim(), network: isWallet ? network! : undefined } : { imageDataUrl: image! };
-      const r = await scan({ data: payload });
+      const r = await scan({ data: payload as { text?: string; link?: string; imageDataUrl?: string; network?: string } });
       if (!r.ok) return setError(r.message);
       setResult(r.result);
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
