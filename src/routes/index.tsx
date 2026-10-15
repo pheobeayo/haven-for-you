@@ -218,6 +218,12 @@ function Index() {
 
         <div ref={resultRef}>
           {result && <ResultCard result={result} />}
+          {result && (
+            <details className="mt-3 rounded-2xl border-2 border-foreground bg-card p-4">
+              <summary className="tap flex items-center text-base font-bold">Raw result (for testing)</summary>
+              <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words text-xs">{JSON.stringify(result, null, 2)}</pre>
+            </details>
+          )}
           {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">Sign in to save your checks.</p>}
         </div>
 
