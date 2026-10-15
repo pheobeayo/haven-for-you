@@ -6,6 +6,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
 import { useAuth } from "@/hooks/use-auth";
+import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
@@ -62,6 +63,8 @@ function Index() {
   const [mode, setMode] = useState<Mode>("text");
   const [text, setText] = useState("");
   const [link, setLink] = useState("");
+  const [network, setNetwork] = useState<Network | null>(null);
+  const isWallet = WALLET_RE.test(link.trim());
   const [image, setImage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,15 +72,15 @@ function Index() {
   const fileRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const ready = mode === "text" ? text.trim() : mode === "link" ? link.trim() : image;
+  const ready = mode === "text" ? text.trim() : mode === "link" ? link.trim() && (!isWallet || network) : image;
 
   async function onCheck() {
     setBusy(true);
     setError(null);
     setResult(null);
     try {
-      const payload = mode === "text" ? { text } : mode === "link" ? { link } : { imageDataUrl: image! };
-      const r = await scan({ data: payload });
+      const payload = mode === "text" ? { text } : mode === "link" ? { link: link.trim(), network: isWallet ? network! : undefined } : { imageDataUrl: image! };
+      const r = await scan({ data: payload as { text?: string; link?: string; imageDataUrl?: string; network?: string } });
       if (!r.ok) return setError(r.message);
       setResult(r.result);
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -105,6 +108,7 @@ function Index() {
     setError(null);
     setText("");
     setLink("");
+    setNetwork(null);
     setImage(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -177,6 +181,24 @@ function Index() {
                 placeholder="https://... or wallet address"
                 className="tap w-full rounded-xl border-2 border-input bg-background px-4 text-lg focus:border-ring focus:outline-none"
               />
+            )}
+            {mode === "link" && isWallet && (
+              <fieldset className="mt-3">
+                <legend className="text-base font-bold">This looks like a wallet address. Which network?</legend>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {NETWORKS.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      aria-pressed={network === n}
+                      onClick={() => setNetwork(n)}
+                      className={`tap rounded-xl border-2 text-base font-bold ${network === n ? "border-foreground bg-primary text-primary-foreground" : "border-input bg-secondary text-secondary-foreground"}`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
             )}
 
             {mode === "photo" && (
