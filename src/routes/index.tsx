@@ -277,14 +277,14 @@ function Index() {
             )}
           </div>
 
-          <p className="mt-3 text-sm text-muted-foreground lg:hidden">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
+          <p className="mt-3 text-sm text-muted-foreground lg:hidden">{pcm ? "No share your PIN, password, OTP or full account number. We no go ever ask you." : "Never share your PIN, password, OTP or full account number. We will never ask for them."}</p>
 
           <button
             onClick={onCheck}
             disabled={!ready || busy}
             className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-accent text-xl font-extrabold text-accent-foreground disabled:opacity-50"
           >
-            {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> Checking…</>) : "Check it"}
+            {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> {pcm ? "We dey check…" : "Checking…"}</>) : pcm ? "Check am" : "Check it"}
           </button>
         </div>
 
