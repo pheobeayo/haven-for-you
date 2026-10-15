@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Camera, Link2, Loader2, MessageSquareText, X } from "lucide-react";
+import { Camera, Eye, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
@@ -23,6 +23,27 @@ export const Route = createFileRoute("/")({
 });
 
 type Mode = "text" | "photo" | "link";
+
+const EXAMPLES = [
+  {
+    label: "Fake credit alert",
+    text: "Acct: 01**89 Credit: NGN50,000.00 Desc: TRF/OLUWASEUN Bal: NGN52,310.55. Your BVN has been suspended. Verify now at http://gtb-verify.cc to avoid account closure.",
+  },
+  {
+    label: "Job offer fee",
+    text: "CONGRATULATIONS! You have been selected for the Dangote Graduate Trainee role. Salary NGN350,000/month. To secure your slot, pay a refundable registration fee of NGN15,000 to 0123456789 Opay within 24 hours.",
+  },
+  {
+    label: "Crypto airdrop",
+    text: "Binance is giving away 0.5 BTC to the first 500 Nigerians! Connect your wallet at binance-airdrop.top and pay a small gas fee of $20 to claim your reward. Offer ends tonight!",
+  },
+];
+
+const STEPS = [
+  { Icon: MessageSquareText, title: "1. Paste or snap", body: "Add the message, screenshot or link." },
+  { Icon: SearchCheck, title: "2. We check it", body: "AI looks for scam tricks." },
+  { Icon: ShieldCheck, title: "3. You decide", body: "See the verdict before you pay." },
+];
 
 async function compress(file: File): Promise<string> {
   const img = await createImageBitmap(file);
@@ -80,99 +101,114 @@ function Index() {
   }
 
   const tabs: { id: Mode; label: string; Icon: typeof Camera }[] = [
-    { id: "text", label: "Message", Icon: MessageSquareText },
-    { id: "photo", label: "Screenshot", Icon: Camera },
-    { id: "link", label: "Link", Icon: Link2 },
+    { id: "text", label: "Paste message", Icon: MessageSquareText },
+    { id: "photo", label: "Upload screenshot", Icon: Camera },
+    { id: "link", label: "Link or wallet", Icon: Link2 },
   ];
 
   return (
     <div className="min-h-screen pb-12">
       <AppHeader />
       <main className="mx-auto max-w-xl space-y-5 px-4">
-        <div>
-          <h1 className="text-4xl font-extrabold leading-tight">Before you pay,<br />shine your eye.</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Check any alert, message or link. Free. No sign-up.</p>
+        <div className="text-center">
+          <h1 className="flex items-center justify-center gap-2 text-4xl font-extrabold leading-tight">
+            <Eye className="h-9 w-9 shrink-0 text-primary" aria-hidden />
+            Shine Your Eye
+          </h1>
+          <p className="mt-2 text-lg text-muted-foreground">Check before you pay or send goods.</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-2" role="tablist">
-          {tabs.map(({ id, label, Icon }) => (
+        <div className="rounded-2xl border-2 border-foreground bg-card p-3 shadow-[4px_4px_0_0_var(--foreground)]">
+          <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="What do you want to check?">
+            {tabs.map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={mode === id}
+                onClick={() => { setMode(id); setError(null); }}
+                className={`flex min-h-16 flex-col items-center justify-center gap-1 rounded-xl border-2 text-sm font-bold leading-tight ${mode === id ? "border-foreground bg-primary text-primary-foreground" : "border-input bg-secondary text-secondary-foreground"}`}
+              >
+                <Icon className="h-6 w-6 shrink-0" aria-hidden />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-3">
+            {mode === "text" && (
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={6}
+                aria-label="Paste the message or alert"
+                placeholder="Paste the SMS, WhatsApp message or email here"
+                className="w-full rounded-xl border-2 border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
+              />
+            )}
+
+            {mode === "link" && (
+              <input
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                inputMode="url"
+                aria-label="Website link or crypto address"
+                placeholder="https://... or wallet address"
+                className="tap w-full rounded-xl border-2 border-input bg-background px-4 text-lg focus:border-ring focus:outline-none"
+              />
+            )}
+
+            {mode === "photo" && (
+              <div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (f) setImage(await compress(f).catch(() => null));
+                    e.target.value = "";
+                  }}
+                />
+                {image ? (
+                  <div className="relative">
+                    <img src={image} alt="Your screenshot" className="max-h-80 w-full rounded-xl border-2 border-foreground bg-background object-contain" />
+                    <button onClick={() => setImage(null)} aria-label="Remove screenshot" className="absolute right-2 top-2 grid h-12 w-12 place-items-center rounded-full bg-foreground text-background">
+                      <X className="h-6 w-6" />
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={() => fileRef.current?.click()} className="flex min-h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-foreground bg-background text-lg font-bold">
+                    <Camera className="h-10 w-10" aria-hidden />
+                    Choose screenshot
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          <p className="mt-3 text-sm text-muted-foreground">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
+
+          <button
+            onClick={onCheck}
+            disabled={!ready || busy}
+            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-accent text-xl font-extrabold text-accent-foreground disabled:opacity-50"
+          >
+            {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> Checking…</>) : "Check it"}
+          </button>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-2">
+          {EXAMPLES.map((ex) => (
             <button
-              key={id}
-              role="tab"
-              aria-selected={mode === id}
-              onClick={() => { setMode(id); setError(null); }}
-              className={`flex min-h-20 flex-col items-center justify-center gap-1 rounded-2xl border-2 border-foreground text-base font-bold ${mode === id ? "bg-primary text-primary-foreground" : "bg-card"}`}
+              key={ex.label}
+              onClick={() => { setMode("text"); setText(ex.text); setError(null); }}
+              className="tap rounded-full border-2 border-foreground bg-secondary px-4 text-base font-bold text-secondary-foreground"
             >
-              <Icon className="h-7 w-7" aria-hidden />
-              {label}
+              {ex.label}
             </button>
           ))}
         </div>
-
-        {mode === "text" && (
-          <label className="block">
-            <span className="mb-2 block text-lg font-bold">Paste the message or alert</span>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={6}
-              placeholder="e.g. Acct: 01**89 Credit: NGN50,000 ..."
-              className="w-full rounded-2xl border-2 border-input bg-card p-4 text-lg focus:border-ring focus:outline-none"
-            />
-          </label>
-        )}
-
-        {mode === "link" && (
-          <label className="block">
-            <span className="mb-2 block text-lg font-bold">Website link or crypto address</span>
-            <input
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              inputMode="url"
-              placeholder="https://..."
-              className="tap w-full rounded-2xl border-2 border-input bg-card px-4 text-lg focus:border-ring focus:outline-none"
-            />
-          </label>
-        )}
-
-        {mode === "photo" && (
-          <div>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={async (e) => {
-                const f = e.target.files?.[0];
-                if (f) setImage(await compress(f).catch(() => null));
-                e.target.value = "";
-              }}
-            />
-            {image ? (
-              <div className="relative">
-                <img src={image} alt="Your screenshot" className="max-h-80 w-full rounded-2xl border-2 border-foreground object-contain bg-card" />
-                <button onClick={() => setImage(null)} aria-label="Remove screenshot" className="absolute right-2 top-2 grid h-12 w-12 place-items-center rounded-full bg-foreground text-background">
-                  <X className="h-6 w-6" />
-                </button>
-              </div>
-            ) : (
-              <button onClick={() => fileRef.current?.click()} className="flex min-h-40 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-foreground bg-card text-lg font-bold">
-                <Camera className="h-10 w-10" aria-hidden />
-                Choose screenshot
-              </button>
-            )}
-          </div>
-        )}
-
-        <p className="text-base text-muted-foreground">Never share your PIN, password, OTP or full account number. We will never ask for them.</p>
-
-        <button
-          onClick={onCheck}
-          disabled={!ready || busy}
-          className="tap flex w-full items-center justify-center gap-2 rounded-2xl bg-accent text-xl font-extrabold text-accent-foreground border-2 border-foreground disabled:opacity-50"
-        >
-          {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> Checking…</>) : "Check it"}
-        </button>
 
         {error && (
           <div role="alert" className="rounded-2xl border-2 border-careful bg-careful-soft p-4 text-lg">
@@ -184,6 +220,21 @@ function Index() {
           {result && <ResultCard result={result} />}
           {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">Sign in to save your checks.</p>}
         </div>
+
+        <section aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4">
+          <h2 className="text-xl font-extrabold">How it works</h2>
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {STEPS.map(({ Icon, title, body }) => (
+              <div key={title} className="text-center">
+                <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
+                  <Icon className="h-6 w-6" aria-hidden />
+                </div>
+                <p className="mt-2 text-sm font-bold leading-tight">{title}</p>
+                <p className="mt-1 text-xs leading-snug text-muted-foreground">{body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
