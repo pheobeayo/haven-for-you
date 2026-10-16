@@ -97,6 +97,36 @@ export async function saveReport(deviceId: string, scamType: string, items: { ki
   return { ok: true, saved: fresh.length };
 }
 
+export type SingleLookup = { kind: ReportKind; value_masked: string; count: number; top_scam_type: string; latest_date: string };
+
+/** "lookup-report": one normalised value, last 90 days. 30 lookups/device/hour. Never throws on DB failure. */
+export async function lookupSingle(deviceId: string, item: Identifier): Promise<SingleLookup | "rate_limit" | "invalid"> {
+  const kind = toKind(item.type);
+  const v = kind ? normalizeValue(kind, item.value) : null;
+  if (!kind || !v) return "invalid";
+  const db = await admin();
+  const hourAgo = new Date(Date.now() - 36e5).toISOString();
+  const { count, error: e0 } = await db
+    .from("lookup_events").select("id", { count: "exact", head: true })
+    .eq("device_id", deviceId).gt("created_at", hourAgo);
+  if (e0) throw e0;
+  if ((count ?? 0) >= 30) return "rate_limit";
+  const { error: e1 } = await db.from("lookup_events").insert({ device_id: deviceId });
+  if (e1) throw e1;
+
+  const since = new Date(Date.now() - 90 * 864e5).toISOString();
+  const { data, error } = await db
+    .from("scam_reports").select("scam_type, created_at")
+    .eq("kind", kind).eq("value_normalized", v).gt("created_at", since).limit(5000);
+  if (error) throw error;
+  const rows = data ?? [];
+  const counts = new Map<string, number>();
+  for (const r of rows) if (r.scam_type) counts.set(r.scam_type, (counts.get(r.scam_type) ?? 0) + 1);
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+  const latest = rows.reduce((m, r) => (r.created_at > m ? r.created_at : m), "");
+  return { kind, value_masked: maskValue(kind, v), count: rows.length, top_scam_type: top, latest_date: latest };
+}
+
 export async function hashDevice(id: string) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("sye:" + id));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
