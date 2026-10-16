@@ -3,6 +3,7 @@ import type { ScanResult } from "@/lib/scan.functions";
 import { useLang } from "@/lib/lang";
 import { ShareWarning } from "@/components/ShareWarning";
 import { CommunityMatches, ReportButton } from "@/components/CommunityReports";
+import { ProtectOthers } from "@/components/ProtectOthers";
 import { ListenButton } from "@/components/ListenButton";
 
 const V = {
@@ -61,6 +62,7 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
 
       <div className="min-w-0 space-y-5 p-4 lg:p-6 [&_p]:max-w-[65ch]">
         <CommunityMatches result={result} />
+        <ProtectOthers result={result} />
         <ReportButton result={result} />
         {result.onchain && result.onchain.length > 0 && (
           <div>

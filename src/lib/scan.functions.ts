@@ -12,12 +12,15 @@ export type ScanResult = {
   onchain?: OnchainCheck[];
   identifiers?: Identifier[];
   community?: ReportMatch[];
+  entities?: Entity[];
 };
+export type Entity = { kind: string; value: string; value_masked: string };
 export type ScanResponse =
   | { ok: true; result: ScanResult }
   | { ok: false; code: "rate_limit" | "no_credits" | "bad_input" | "ai_error"; message: string };
 
 import { extractIdentifiers, type Identifier } from "./identifiers";
+import { maskValue, normalizeValue, toKind } from "./report-normalize";
 import { lookupReports, recordScanEvent, type ReportMatch } from "./reports.server";
 import { goplusToken, type OnchainCheck } from "./goplus";
 import { checkUrl, detectKind, explorerFor, NETWORKS, type Network } from "./link-checks";
@@ -31,8 +34,9 @@ Be careful not to over-flag. Normal bank notices (transaction alerts, balance an
 If the image is a bank credit alert or transfer receipt, check for signs of a fake: sender is a regular phone number or app notification instead of the bank; wrong or inconsistent bank name, logo, fonts or spacing; amounts formatted wrongly (e.g. missing commas, wrong currency symbol); balance that doesn't make sense; date or time errors; edited-looking text. Always tell the user to confirm by checking their bank app or calling the bank, never by trusting the alert.
 Quote the exact words from the message as evidence for every red flag. Do not invent evidence. If the message looks normal, say 'safe' and explain why. Give 2-4 short, practical next steps. Write explanation_en in plain simple English and explanation_pcm in natural Nigerian Pidgin. Return JSON only.
 Return ONLY JSON, no markdown, exactly this shape:
-{"verdict":"scam"|"suspicious"|"safe","risk_score":0-100,"scam_type":string,"red_flags":[{"flag":string,"evidence":string}],"what_to_do":[string],"explanation_en":string,"explanation_pcm":string}
-For "safe", red_flags may be empty and scam_type should be "None found".`;
+{"verdict":"scam"|"suspicious"|"safe","risk_score":0-100,"scam_type":string,"red_flags":[{"flag":string,"evidence":string}],"what_to_do":[string],"explanation_en":string,"explanation_pcm":string,"entities":[{"kind":"phone"|"bank_account"|"link"|"wallet","value":string}]}
+For "safe", red_flags may be empty and scam_type should be "None found".
+In "entities", list every possible scammer detail you can see in the message or screenshot: Nigerian phone numbers, 10-digit bank account numbers, domains from links, and 0x wallet addresses. Copy each value exactly as written. If none, use an empty array.`;
 
 function validate(raw: string): ScanResult | null {
   try {
@@ -45,6 +49,7 @@ function validate(raw: string): ScanResult | null {
     if (!Array.isArray(o.red_flags) || !o.red_flags.every((f: any) => typeof f?.flag === "string" && typeof f?.evidence === "string")) return null;
     if (!Array.isArray(o.what_to_do) || !o.what_to_do.every((s: any) => typeof s === "string")) return null;
     if (typeof o.explanation_en !== "string" || typeof o.explanation_pcm !== "string") return null;
+    if (o.entities !== undefined && (!Array.isArray(o.entities) || !o.entities.every((e: any) => typeof e?.kind === "string" && typeof e?.value === "string"))) return null;
     return { ...o, risk_score: Math.round(score) };
   } catch {
     return null;
@@ -93,6 +98,21 @@ async function callAI(key: string, content: any[]): Promise<{ status: number; te
     }
   }
   return { status: 200, text: out };
+}
+
+/** Merge offline-extracted identifiers with AI-found entities; normalise + mask each. */
+function mergeEntities(identifiers: Identifier[], aiEntities: { kind: string; value: string }[] | undefined): Entity[] {
+  const out = new Map<string, Entity>();
+  const add = (kindRaw: string, raw: string) => {
+    const kind = toKind(kindRaw);
+    if (!kind) return;
+    const value = normalizeValue(kind, raw);
+    if (!value) return;
+    out.set(kind + ":" + value, { kind, value, value_masked: maskValue(kind, value) });
+  };
+  for (const i of identifiers) add(i.type, i.value);
+  for (const e of aiEntities ?? []) add(e.kind, e.value);
+  return [...out.values()].slice(0, 20);
 }
 
 export const scanContent = createServerFn({ method: "POST" })
@@ -155,7 +175,8 @@ export const scanContent = createServerFn({ method: "POST" })
       const v = validate(r.text);
       if (v) {
         await recordScanEvent(v.verdict, v.scam_type);
-        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community } };
+        const entities = mergeEntities(identifiers, (v as any).entities);
+        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community, entities } };
       }
       console.error("Invalid AI JSON", r.text.slice(0, 300));
     }
