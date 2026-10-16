@@ -132,13 +132,21 @@ function Index() {
   const [canRetry, setCanRetry] = useState(false);
 
   // Web Share Target: Android "Share → Shine Your Eye" opens /?text=…
+  // Also restores a draft saved when sign-in interrupted a check.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const shared = [q.get("title"), q.get("text"), q.get("url")].filter((s) => s && s.trim()).join("\n").trim();
-    if (!shared) return;
-    setMode("text");
-    setText(shared.slice(0, MAX_TEXT));
-    window.history.replaceState(null, "", window.location.pathname);
+    if (shared) {
+      setMode("text");
+      setText(shared.slice(0, MAX_TEXT));
+      window.history.replaceState(null, "", window.location.pathname);
+      try { sessionStorage.removeItem("sye-draft"); } catch { /* storage unavailable */ }
+      return;
+    }
+    try {
+      const draft = sessionStorage.getItem("sye-draft");
+      if (draft) { setMode("text"); setText(draft.slice(0, MAX_TEXT)); sessionStorage.removeItem("sye-draft"); }
+    } catch { /* storage unavailable */ }
   }, []);
 
   async function onCheck() {
