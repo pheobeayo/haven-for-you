@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
@@ -17,51 +18,55 @@ import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedPrivacyRouteImport } from './routes/_authenticated/privacy'
 import { Route as AuthenticatedTrendsRouteImport } from './routes/_authenticated/trends'
 
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/_authenticated/',
+  id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
-  id: '/_authenticated/about',
+  id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedBeenScammedRoute =
   AuthenticatedBeenScammedRouteImport.update({
-    id: '/_authenticated/been-scammed',
+    id: '/been-scammed',
     path: '/been-scammed',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
-  id: '/_authenticated/history',
+  id: '/history',
   path: '/history',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPrivacyRoute = AuthenticatedPrivacyRouteImport.update({
-  id: '/_authenticated/privacy',
+  id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedTrendsRoute = AuthenticatedTrendsRouteImport.update({
-  id: '/_authenticated/trends',
+  id: '/trends',
   path: '/trends',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
   '/about': typeof AuthenticatedAboutRoute
   '/been-scammed': typeof AuthenticatedBeenScammedRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/privacy': typeof AuthenticatedPrivacyRoute
   '/trends': typeof AuthenticatedTrendsRoute
-  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -74,6 +79,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/about': typeof AuthenticatedAboutRoute
   '/_authenticated/been-scammed': typeof AuthenticatedBeenScammedRoute
@@ -85,13 +91,13 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/auth'
     | '/about'
     | '/been-scammed'
     | '/history'
     | '/privacy'
     | '/trends'
-    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -103,6 +109,7 @@ export interface FileRouteTypes {
     | '/'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/auth'
     | '/_authenticated/about'
     | '/_authenticated/been-scammed'
@@ -113,17 +120,19 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
-  AuthenticatedBeenScammedRoute: typeof AuthenticatedBeenScammedRoute
-  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
-  AuthenticatedPrivacyRoute: typeof AuthenticatedPrivacyRoute
-  AuthenticatedTrendsRoute: typeof AuthenticatedTrendsRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -136,54 +145,70 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/about': {
       id: '/_authenticated/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AuthenticatedAboutRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/been-scammed': {
       id: '/_authenticated/been-scammed'
       path: '/been-scammed'
       fullPath: '/been-scammed'
       preLoaderRoute: typeof AuthenticatedBeenScammedRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/history': {
       id: '/_authenticated/history'
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof AuthenticatedHistoryRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/privacy': {
       id: '/_authenticated/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof AuthenticatedPrivacyRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/trends': {
       id: '/_authenticated/trends'
       path: '/trends'
       fullPath: '/trends'
       preLoaderRoute: typeof AuthenticatedTrendsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  AuthRoute: AuthRoute,
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
+  AuthenticatedBeenScammedRoute: typeof AuthenticatedBeenScammedRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedPrivacyRoute: typeof AuthenticatedPrivacyRoute
+  AuthenticatedTrendsRoute: typeof AuthenticatedTrendsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAboutRoute: AuthenticatedAboutRoute,
   AuthenticatedBeenScammedRoute: AuthenticatedBeenScammedRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedPrivacyRoute: AuthenticatedPrivacyRoute,
   AuthenticatedTrendsRoute: AuthenticatedTrendsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
