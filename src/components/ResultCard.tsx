@@ -3,6 +3,7 @@ import type { ScanResult } from "@/lib/scan.functions";
 import { useLang } from "@/lib/lang";
 import { ShareWarning } from "@/components/ShareWarning";
 import { CommunityMatches, ReportButton } from "@/components/CommunityReports";
+import { ListenButton } from "@/components/ListenButton";
 
 const V = {
   scam: { word: "Likely scam", pcm: "E be like scam", Icon: OctagonX, bg: "bg-scam", soft: "bg-scam-soft", text: "text-scam" },
@@ -39,6 +40,8 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
             <div className="h-full rounded-full bg-verdict-foreground" style={{ width: `${Math.max(4, result.risk_score)}%` }} />
           </div>
         </div>
+
+        <ListenButton result={result} />
       </div>
 
       <div className="space-y-5 p-4 lg:p-6">
