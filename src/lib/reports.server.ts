@@ -7,7 +7,7 @@ async function rpc(fn: string, body: unknown): Promise<any> {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"] ?? process.env["SUPABASE_ANON_KEY"];
   if (!url || !key) throw new Error("backend not configured");
   const headers: Record<string, string> = { apikey: key, "Content-Type": "application/json" };
-  if (!key.startsWith("sb_")) headers.Authorization = `Bearer ${key}`;
+  if (!key.startsWith("sb_")) headers["Authorization"] = `Bearer ${key}`;
   const res = await fetch(`${url}/rest/v1/rpc/${fn}`, { method: "POST", headers, body: JSON.stringify(body), signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new Error(`rpc ${fn} ${res.status}: ${(await res.text()).slice(0, 200)}`);
   return res.json();
