@@ -49,6 +49,7 @@ function validate(raw: string): ScanResult | null {
     if (!Array.isArray(o.red_flags) || !o.red_flags.every((f: any) => typeof f?.flag === "string" && typeof f?.evidence === "string")) return null;
     if (!Array.isArray(o.what_to_do) || !o.what_to_do.every((s: any) => typeof s === "string")) return null;
     if (typeof o.explanation_en !== "string" || typeof o.explanation_pcm !== "string") return null;
+    if (o.entities !== undefined && (!Array.isArray(o.entities) || !o.entities.every((e: any) => typeof e?.kind === "string" && typeof e?.value === "string"))) return null;
     return { ...o, risk_score: Math.round(score) };
   } catch {
     return null;
@@ -159,7 +160,8 @@ export const scanContent = createServerFn({ method: "POST" })
       const v = validate(r.text);
       if (v) {
         await recordScanEvent(v.verdict, v.scam_type);
-        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community } };
+        const entities = mergeEntities(identifiers, (v as any).entities);
+        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community, entities } };
       }
       console.error("Invalid AI JSON", r.text.slice(0, 300));
     }
