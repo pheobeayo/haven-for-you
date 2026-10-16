@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { parseSingle, type Identifier } from "./identifiers";
-import { hashDevice, lookupReports, lookupSingle, saveReport, type SingleLookup } from "./reports.server";
+import { parseSingle } from "./identifiers";
+import { hashDevice, lookupSingle, saveReport, type SingleLookup } from "./reports.server";
 
 
 // "report-scam": accepts {items:[{kind,value}], scam_type, device_id} and the older UI shape.
