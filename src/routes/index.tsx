@@ -143,6 +143,10 @@ function Index() {
 
   async function onCheck() {
     if (busyRef.current) return;
+    if (!loading && !user) {
+      void nav({ to: "/auth", search: { redirect: "/" } });
+      return;
+    }
     setCanRetry(false);
     if (mode === "text" && text.trim().length < 15) {
       setError(pcm ? "Dis message too short to check. Abeg paste the full message." : "This message is too short to check. Please paste the full message.");
