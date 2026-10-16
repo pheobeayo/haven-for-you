@@ -152,6 +152,7 @@ function Index() {
   async function onCheck() {
     if (busyRef.current) return;
     if (!loading && !user) {
+      try { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); } catch { /* storage unavailable */ }
       void nav({ to: "/auth", search: { redirect: "/" } });
       return;
     }
