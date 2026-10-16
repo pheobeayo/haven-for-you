@@ -15,7 +15,7 @@ function safeDestination(value: unknown) {
   return ["/", "/history", "/trends", "/about", "/privacy", "/been-scammed"].includes(pathname) ? value : "/";
 }
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { redirect?: string; mode?: "signup" | "signin" } => ({
+  validateSearch: (search: Record<string, unknown>): { redirect?: string | undefined; mode?: "signup" | "signin" | undefined } => ({
     redirect: search['redirect'] === undefined ? undefined : safeDestination(search['redirect']),
     mode: search['mode'] === "signup" ? "signup" : search['mode'] === "signin" ? "signin" : undefined,
   }),
