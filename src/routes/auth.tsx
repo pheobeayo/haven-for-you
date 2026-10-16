@@ -10,11 +10,11 @@ import { useAuth } from "@/hooks/use-auth";
 
 function safeDestination(value: unknown) {
   if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
-  const pathname = value.split(/[?#]/)[0];
+  const pathname = value.split(/[?#]/)[0] ?? "/";
   return ["/", "/history", "/trends", "/about", "/privacy", "/been-scammed"].includes(pathname) ? value : "/";
 }
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({ redirect: safeDestination(search.redirect) }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({ redirect: safeDestination(search['redirect']) }),
   head: () => ({ meta: [
     { title: "Sign in or create an account — Shine Your Eye" },
     { name: "description", content: "Create an account or sign in to check for scams and keep your private history. English and Nigerian Pidgin." },
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/auth")({
 });
 function AuthPage() {
   const nav = useNavigate();
-  const { redirect } = Route.useSearch();
+  const redirect = Route.useSearch().redirect ?? "/";
   const { user, loading } = useAuth();
   const pcm = useLang().lang === "pcm";
   const [signup, setSignup] = useState(false);
