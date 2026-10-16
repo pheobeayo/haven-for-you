@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
-import { parseSingle, type Identifier } from "./identifiers";
-import { hashDevice, lookupReports, saveReport } from "./reports.server";
+import { parseSingle } from "./identifiers";
+import { hashDevice, lookupSingle, saveReport } from "./reports.server";
+
+export type LookupResult = { kind: string; value_masked: string; count: number; top_scam_type: string; latest_date: string };
 
 
 // "report-scam": accepts {items:[{kind,value}], scam_type, device_id} and the older UI shape.
@@ -25,11 +27,22 @@ export const reportScam = createServerFn({ method: "POST" })
     }
   });
 
+// "lookup-report": { value, deviceId } -> { kind, value_masked, count, top_scam_type, latest_date } (last 90 days).
 export const checkValue = createServerFn({ method: "POST" })
-  .inputValidator((input: { value: string }) => ({ value: String(input.value ?? "").slice(0, 300) }))
-  .handler(async ({ data }): Promise<{ ok: true; item: Identifier; reports: number } | { ok: false }> => {
+  .inputValidator((input: { value: string; deviceId?: string; device_id?: string }) => ({
+    value: String(input.value ?? "").slice(0, 300),
+    deviceId: String(input.device_id ?? input.deviceId ?? "").slice(0, 100),
+  }))
+  .handler(async ({ data }): Promise<{ ok: true; result: LookupResult } | { ok: false; code: "bad_input" | "rate_limit" | "error" }> => {
     const item = parseSingle(data.value);
-    if (!item) return { ok: false };
-    const m = await lookupReports([item]);
-    return { ok: true, item, reports: m[0]?.reports ?? 0 };
+    if (!item || data.deviceId.length < 16) return { ok: false, code: "bad_input" };
+    try {
+      const r = await lookupSingle(await hashDevice(data.deviceId), item);
+      if (r === "invalid") return { ok: false, code: "bad_input" };
+      if (r === "rate_limit") return { ok: false, code: "rate_limit" };
+      return { ok: true, result: r };
+    } catch (e) {
+      console.error("checkValue failed", e);
+      return { ok: false, code: "error" };
+    }
   });

@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      lookup_events: {
+        Row: {
+          created_at: string
+          device_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
       scam_reports: {
         Row: {
           created_at: string
