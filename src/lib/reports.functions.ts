@@ -19,7 +19,7 @@ export const reportScam = createServerFn({ method: "POST" })
     const items = data.items.length ? data.items : [{ type: "message_pattern" as const, value: (data.scamType || "unknown").toLowerCase() }];
     try {
       const r = await saveReport(await hashDevice(data.deviceId), data.scamType, items);
-      return r.ok ? { ok: true } : { ok: false, code: r.code };
+      return r.ok ? { ok: true } : { ok: false, code: r.code ?? "error" };
     } catch (e) {
       console.error("reportScam failed", e);
       return { ok: false, code: "error" };

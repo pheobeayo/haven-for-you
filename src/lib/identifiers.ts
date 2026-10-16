@@ -15,7 +15,7 @@ export function normalizePhone(raw: string): string | null {
 export function normalizeDomain(raw: string): string | null {
   let s = raw.trim().toLowerCase();
   s = s.replace(/^[a-z]+:\/\//, "").replace(/^www\./, "");
-  s = s.split(/[/?#:\s]/)[0];
+  s = s.split(/[/?#:\s]/)[0] ?? "";
   return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(s) && /[a-z]/.test(s.split(".").pop() ?? "") ? s : null;
 }
 
