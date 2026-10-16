@@ -19,28 +19,43 @@ export type Database = {
           created_at: string
           demo: boolean
           device_hash: string | null
+          device_id: string | null
           id: string
+          kind: string | null
           scam_type: string
+          source: string
           type: string
           value: string
+          value_masked: string | null
+          value_normalized: string | null
         }
         Insert: {
           created_at?: string
           demo?: boolean
           device_hash?: string | null
+          device_id?: string | null
           id?: string
+          kind?: string | null
           scam_type?: string
+          source?: string
           type: string
           value: string
+          value_masked?: string | null
+          value_normalized?: string | null
         }
         Update: {
           created_at?: string
           demo?: boolean
           device_hash?: string | null
+          device_id?: string | null
           id?: string
+          kind?: string | null
           scam_type?: string
+          source?: string
           type?: string
           value?: string
+          value_masked?: string | null
+          value_normalized?: string | null
         }
         Relationships: []
       }

@@ -1,28 +1,27 @@
 import { createServerFn } from "@tanstack/react-start";
-import { parseSingle, type Identifier, type ReportType } from "./identifiers";
+import { parseSingle, type Identifier } from "./identifiers";
 import { hashDevice, lookupReports, saveReport } from "./reports.server";
 
-const TYPES: ReportType[] = ["phone_number", "bank_account", "link", "wallet", "message_pattern"];
 
+// "report-scam": accepts {items:[{kind,value}], scam_type, device_id} and the older UI shape.
 export const reportScam = createServerFn({ method: "POST" })
-  .inputValidator((input: { deviceId: string; scamType: string; items: Identifier[] }) => {
-    const deviceId = String(input.deviceId ?? "").slice(0, 100);
-    const scamType = String(input.scamType ?? "").slice(0, 200);
+  .inputValidator((input: { deviceId?: string; device_id?: string; scamType?: string; scam_type?: string; items: ({ kind?: string; type?: string; value: string })[] }) => {
+    const deviceId = String(input.device_id ?? input.deviceId ?? "").slice(0, 100);
+    const scamType = String(input.scam_type ?? input.scamType ?? "").slice(0, 200);
     const items = (Array.isArray(input.items) ? input.items : [])
-      .filter((i) => TYPES.includes(i?.type) && typeof i.value === "string" && i.value.trim())
+      .filter((i) => i && typeof i.value === "string" && i.value.trim())
       .slice(0, 10)
-      .map((i) => ({ type: i.type, value: i.value.trim().slice(0, 200) }));
+      .map((i) => ({ kind: String(i.kind ?? i.type ?? ""), value: i.value.trim().slice(0, 200) }));
     return { deviceId, scamType, items };
   })
-  .handler(async ({ data }): Promise<{ ok: boolean; code?: string }> => {
-    if (data.deviceId.length < 16) return { ok: false, code: "bad_input" };
-    const items = data.items.length ? data.items : [{ type: "message_pattern" as const, value: (data.scamType || "unknown").toLowerCase() }];
+  .handler(async ({ data }): Promise<{ ok: boolean; code?: string; saved: number }> => {
+    if (data.deviceId.length < 16) return { ok: false, code: "bad_input", saved: 0 };
     try {
-      const r = await saveReport(await hashDevice(data.deviceId), data.scamType, items);
-      return r.ok ? { ok: true } : { ok: false, code: r.code ?? "error" };
+      const r = await saveReport(await hashDevice(data.deviceId), data.scamType, data.items);
+      return r.ok ? { ok: true, saved: r.saved } : { ok: false, code: r.code ?? "error", saved: 0 };
     } catch (e) {
       console.error("reportScam failed", e);
-      return { ok: false, code: "error" };
+      return { ok: false, code: "error", saved: 0 };
     }
   });
 

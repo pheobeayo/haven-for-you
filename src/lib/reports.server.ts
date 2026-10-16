@@ -1,6 +1,12 @@
 import type { Identifier } from "./identifiers";
+import { maskValue, normalizeValue, toKind, type ReportKind } from "./report-normalize";
 
 export type ReportMatch = Identifier & { reports: number };
+
+async function admin() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
 
 async function rpc(fn: string, body: unknown): Promise<any> {
   const url = process.env["SUPABASE_URL"];
@@ -13,20 +19,77 @@ async function rpc(fn: string, body: unknown): Promise<any> {
   return res.json();
 }
 
-/** Returns matches from the last 30 days; never throws (empty on failure). */
+/** Matches from the last 30 days; never throws (empty on failure). Values are normalised first. */
 export async function lookupReports(items: Identifier[]): Promise<ReportMatch[]> {
-  if (!items.length) return [];
+  const norm = items
+    .map((i) => {
+      const kind = toKind(i.type);
+      const v = kind ? normalizeValue(kind, i.value) : null;
+      return kind && v ? { item: i, kind, v } : null;
+    })
+    .filter((x): x is { item: Identifier; kind: ReportKind; v: string } => !!x)
+    .slice(0, 20);
+  if (!norm.length) return [];
   try {
-    const rows = (await rpc("lookup_reports", { _items: items })) as { type: string; value: string; reports: number }[];
-    return rows.map((r) => ({ type: r.type as Identifier["type"], value: r.value, reports: Number(r.reports) }));
+    const db = await admin();
+    const since = new Date(Date.now() - 30 * 864e5).toISOString();
+    const { data, error } = await db
+      .from("scam_reports")
+      .select("kind, value_normalized")
+      .in("value_normalized", [...new Set(norm.map((n) => n.v))])
+      .gt("created_at", since)
+      .limit(5000);
+    if (error) throw error;
+    const out: ReportMatch[] = [];
+    for (const n of norm) {
+      const c = (data ?? []).filter((r) => r.kind === n.kind && r.value_normalized === n.v).length;
+      if (c) out.push({ ...n.item, reports: c });
+    }
+    return out;
   } catch (e) {
     console.error("lookupReports failed", e);
     return [];
   }
 }
 
-export async function saveReport(deviceHash: string, scamType: string, items: Identifier[]) {
-  return (await rpc("report_scam", { _device: deviceHash, _scam_type: scamType, _items: items })) as { ok: boolean; code?: string; saved?: number };
+/** Insert one row per valid item. 5 submissions/device/hour; skip same value from same device within 24h. */
+export async function saveReport(deviceId: string, scamType: string, items: { kind: string; value: string }[]) {
+  const rows = new Map<string, { kind: ReportKind; value_normalized: string; value_masked: string }>();
+  for (const it of items.slice(0, 10)) {
+    const kind = toKind(it.kind);
+    const v = kind ? normalizeValue(kind, it.value) : null;
+    if (kind && v) rows.set(kind + ":" + v, { kind, value_normalized: v, value_masked: maskValue(kind, v) });
+  }
+  if (!rows.size) return { ok: false, code: "invalid", saved: 0 };
+  const db = await admin();
+
+  const hourAgo = new Date(Date.now() - 36e5).toISOString();
+  const dayAgo = new Date(Date.now() - 864e5).toISOString();
+  const { data: recent, error: e1 } = await db
+    .from("scam_reports").select("kind, value_normalized, created_at")
+    .eq("device_id", deviceId).gt("created_at", dayAgo).limit(1000);
+  if (e1) throw e1;
+  const submissions = new Set((recent ?? []).filter((r) => r.created_at > hourAgo).map((r) => r.created_at.slice(0, 19)));
+  if (submissions.size >= 5) return { ok: false, code: "rate_limit", saved: 0 };
+
+  const seen = new Set((recent ?? []).map((r) => r.kind + ":" + r.value_normalized));
+  const fresh = [...rows.entries()].filter(([k]) => !seen.has(k)).map(([, r]) => r);
+  if (!fresh.length) return { ok: true, saved: 0, duplicate: true };
+
+  const now = new Date().toISOString();
+  const { error } = await db.from("scam_reports").insert(
+    fresh.map((r) => ({
+      ...r,
+      type: r.kind === "phone" ? "phone_number" : r.kind, // legacy column, NOT NULL
+      value: r.value_normalized,
+      scam_type: scamType.slice(0, 200),
+      source: "user",
+      device_id: deviceId,
+      created_at: now,
+    })),
+  );
+  if (error) throw error;
+  return { ok: true, saved: fresh.length };
 }
 
 export async function hashDevice(id: string) {
