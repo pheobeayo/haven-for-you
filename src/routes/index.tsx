@@ -5,6 +5,7 @@ import { Camera, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X 
 import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
 import { CheckNumber } from "@/components/CheckNumber";
+import { TrendTiles } from "@/components/TrendTiles";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
@@ -367,6 +368,8 @@ function Index() {
         </div>
 
         <CheckNumber />
+
+        <TrendTiles />
 
         <section id="how-it-works" aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
           <h2 className="text-xl font-extrabold">{pcm ? "How e work" : "How it works"}</h2>
