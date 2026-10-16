@@ -100,6 +100,21 @@ async function callAI(key: string, content: any[]): Promise<{ status: number; te
   return { status: 200, text: out };
 }
 
+/** Merge offline-extracted identifiers with AI-found entities; normalise + mask each. */
+function mergeEntities(identifiers: Identifier[], aiEntities: { kind: string; value: string }[] | undefined): Entity[] {
+  const out = new Map<string, Entity>();
+  const add = (kindRaw: string, raw: string) => {
+    const kind = toKind(kindRaw);
+    if (!kind) return;
+    const value = normalizeValue(kind, raw);
+    if (!value) return;
+    out.set(kind + ":" + value, { kind, value, value_masked: maskValue(kind, value) });
+  };
+  for (const i of identifiers) add(i.type, i.value);
+  for (const e of aiEntities ?? []) add(e.kind, e.value);
+  return [...out.values()].slice(0, 20);
+}
+
 export const scanContent = createServerFn({ method: "POST" })
   .inputValidator((input: ScanInput) => {
     const text = (input.text ?? "").slice(0, 5000);
