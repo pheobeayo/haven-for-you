@@ -70,9 +70,32 @@ export function ListenButton({ result }: { result: ScanResult }) {
     }
   };
 
-  // Only show the button when the browser really can speak.
+  // Only show the button when the browser really can speak: it needs both the
+  // speech engine and at least one voice to read with.
   useEffect(() => {
-    setOk(supported());
+    if (!supported()) return;
+    const synth = window.speechSynthesis;
+    const check = () => setOk(synth.getVoices().length > 0);
+    check();
+    try {
+      synth.addEventListener("voiceschanged", check);
+    } catch {
+      /* engine does not announce voice changes */
+    }
+    // A few browsers fill the voice list late without announcing it.
+    let tries = 0;
+    const poll = window.setInterval(() => {
+      check();
+      if (++tries >= 6) window.clearInterval(poll);
+    }, 500);
+    return () => {
+      try {
+        synth.removeEventListener("voiceschanged", check);
+      } catch {
+        /* nothing to remove */
+      }
+      window.clearInterval(poll);
+    };
   }, []);
 
   // Stop talking when this result changes or the screen goes away.
