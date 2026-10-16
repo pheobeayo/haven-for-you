@@ -1,7 +1,7 @@
 import type { Identifier } from "./identifiers";
 import { maskValue, normalizeValue, toKind, type ReportKind } from "./report-normalize";
 
-export type ReportMatch = Identifier & { reports: number };
+export type ReportMatch = Identifier & { reports: number; value_masked: string; top_scam_type: string; latest: string };
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -19,7 +19,7 @@ async function rpc(fn: string, body: unknown): Promise<any> {
   return res.json();
 }
 
-/** Matches from the last 30 days; never throws (empty on failure). Values are normalised first. */
+/** Matches from the last 90 days; never throws (empty on failure). Values are normalised first. */
 export async function lookupReports(items: Identifier[]): Promise<ReportMatch[]> {
   const norm = items
     .map((i) => {
