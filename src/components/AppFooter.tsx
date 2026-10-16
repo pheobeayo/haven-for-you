@@ -33,7 +33,7 @@ export function AppFooter() {
             <img src={logoAsset.url} alt="Shine Your Eye" className="h-9 w-auto max-w-full object-contain md:h-11" />
           </Link>
           <p className="mt-4 text-base leading-relaxed">{pcm ? "Check am before you pay or send goods." : "Check before you pay or send goods."}</p>
-          <p className="mt-4 text-sm leading-relaxed text-footer-accent">{pcm ? "Made for Abuja 🇳🇬 for SheBuilds on Lovable 2026" : "Made in Abuja 🇳🇬 for SheBuilds on Lovable 2026"}</p>
+          <p className="mt-4 text-sm leading-relaxed text-footer-accent">Made in Nigeria 🇳🇬 for SheBuilds on Lovable 2026</p>
         </div>
         <nav aria-label={pcm ? "App links" : "App"} className="min-w-0">
           <h2 className="mb-2 text-lg font-bold text-footer-accent">App</h2>
