@@ -38,9 +38,17 @@
   --color-safe: var(--safe);
   --color-safe-soft: var(--safe-soft);
   --color-verdict-foreground: var(--verdict-foreground);
+  --color-footer: var(--footer);
+  --color-footer-foreground: var(--footer-foreground);
+  --color-footer-accent: var(--footer-accent);
+  --color-footer-divider: var(--footer-divider);
 }
 
 :root {
+  --footer: #0E4D3A;
+  --footer-foreground: #FFFFFF;
+  --footer-accent: #F5A524;
+  --footer-divider: #39715F;
   --radius: 1rem;
   --background: oklch(0.975 0.015 95);
   --foreground: oklch(0.2 0.03 160);
