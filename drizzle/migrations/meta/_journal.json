@@ -29,6 +29,13 @@
       "when": 1792119651955,
       "tag": "0003_scam_reports_v2_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792147774926,
+      "tag": "0004_account_profiles",
+      "breakpoints": true
     }
   ]
 }
