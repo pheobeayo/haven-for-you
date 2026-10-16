@@ -12,12 +12,15 @@ export type ScanResult = {
   onchain?: OnchainCheck[];
   identifiers?: Identifier[];
   community?: ReportMatch[];
+  entities?: Entity[];
 };
+export type Entity = { kind: string; value: string; value_masked: string };
 export type ScanResponse =
   | { ok: true; result: ScanResult }
   | { ok: false; code: "rate_limit" | "no_credits" | "bad_input" | "ai_error"; message: string };
 
 import { extractIdentifiers, type Identifier } from "./identifiers";
+import { maskValue, normalizeValue, toKind } from "./report-normalize";
 import { lookupReports, recordScanEvent, type ReportMatch } from "./reports.server";
 import { goplusToken, type OnchainCheck } from "./goplus";
 import { checkUrl, detectKind, explorerFor, NETWORKS, type Network } from "./link-checks";
