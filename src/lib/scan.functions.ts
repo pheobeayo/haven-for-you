@@ -180,7 +180,7 @@ export const scanContent = createServerFn({ method: "POST" })
         const seen = new Set(identifiers.map((i) => i.type + ":" + i.value));
         const extra = entities
           .filter((e) => !seen.has(e.kind === "phone" ? "phone_number:" + e.value : e.kind + ":" + e.value))
-          .map((e) => ({ type: e.kind === "phone" ? "phone_number" : e.kind, value: e.value }));
+          .map((e) => ({ type: e.kind === "phone" ? "phone_number" : e.kind, value: e.value }) as Identifier);
         const extraMatches = extra.length ? await lookupReports(extra) : [];
         const community_matches = [...community];
         for (const m of extraMatches) if (!community_matches.some((c) => c.type === m.type && c.value === m.value)) community_matches.push(m);

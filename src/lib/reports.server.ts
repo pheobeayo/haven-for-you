@@ -47,7 +47,7 @@ export async function lookupReports(items: Identifier[]): Promise<ReportMatch[]>
       const counts = new Map<string, number>();
       for (const r of rows) if (r.scam_type) counts.set(r.scam_type, (counts.get(r.scam_type) ?? 0) + 1);
       const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
-      const latest = rows.reduce((m, r) => (r.created_at > m ? r.created_at : m), rows[0].created_at);
+      const latest = rows.reduce((m, r) => (r.created_at > m ? r.created_at : m), rows[0]?.created_at ?? "");
       out.push({ ...n.item, reports: rows.length, value_masked: maskValue(n.kind, n.v), top_scam_type: top, latest });
     }
     return out;
