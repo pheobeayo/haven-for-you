@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { WelcomeHero } from "@/components/WelcomeHero";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
 import { useLang } from "@/lib/lang";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Shine Your Eye — Check for scams before you pay" },
@@ -111,7 +111,8 @@ async function compress(file: File): Promise<string> {
 
 function Index() {
   const scan = useServerFn(scanContent);
-  const { user } = useAuth();
+  const nav = useNavigate();
+  const { user, loading } = useAuth();
   const { lang } = useLang();
   const pcm = lang === "pcm";
   const [mode, setMode] = useState<Mode>("text");
@@ -131,17 +132,30 @@ function Index() {
   const [canRetry, setCanRetry] = useState(false);
 
   // Web Share Target: Android "Share → Shine Your Eye" opens /?text=…
+  // Also restores a draft saved when sign-in interrupted a check.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     const shared = [q.get("title"), q.get("text"), q.get("url")].filter((s) => s && s.trim()).join("\n").trim();
-    if (!shared) return;
-    setMode("text");
-    setText(shared.slice(0, MAX_TEXT));
-    window.history.replaceState(null, "", window.location.pathname);
+    if (shared) {
+      setMode("text");
+      setText(shared.slice(0, MAX_TEXT));
+      window.history.replaceState(null, "", window.location.pathname);
+      try { sessionStorage.removeItem("sye-draft"); } catch { /* storage unavailable */ }
+      return;
+    }
+    try {
+      const draft = sessionStorage.getItem("sye-draft");
+      if (draft) { setMode("text"); setText(draft.slice(0, MAX_TEXT)); sessionStorage.removeItem("sye-draft"); }
+    } catch { /* storage unavailable */ }
   }, []);
 
   async function onCheck() {
     if (busyRef.current) return;
+    if (!loading && !user) {
+      try { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); } catch { /* storage unavailable */ }
+      void nav({ to: "/auth", search: { redirect: "/" } });
+      return;
+    }
     setCanRetry(false);
     if (mode === "text" && text.trim().length < 15) {
       setError(pcm ? "Dis message too short to check. Abeg paste the full message." : "This message is too short to check. Please paste the full message.");

@@ -9,15 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAboutRouteImport } from './routes/_authenticated/about'
 import { Route as AuthenticatedBeenScammedRouteImport } from './routes/_authenticated/been-scammed'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedPrivacyRouteImport } from './routes/_authenticated/privacy'
 import { Route as AuthenticatedTrendsRouteImport } from './routes/_authenticated/trends'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -26,11 +31,6 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
   id: '/about',
@@ -60,7 +60,7 @@ const AuthenticatedTrendsRoute = AuthenticatedTrendsRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/about': typeof AuthenticatedAboutRoute
   '/been-scammed': typeof AuthenticatedBeenScammedRoute
@@ -69,16 +69,17 @@ export interface FileRoutesByFullPath {
   '/trends': typeof AuthenticatedTrendsRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/about': typeof AuthenticatedAboutRoute
   '/been-scammed': typeof AuthenticatedBeenScammedRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/privacy': typeof AuthenticatedPrivacyRoute
   '/trends': typeof AuthenticatedTrendsRoute
-  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/about': typeof AuthenticatedAboutRoute
@@ -86,7 +87,6 @@ export interface FileRoutesById {
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/privacy': typeof AuthenticatedPrivacyRoute
   '/_authenticated/trends': typeof AuthenticatedTrendsRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,15 +100,16 @@ export interface FileRouteTypes {
     | '/trends'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/auth'
     | '/about'
     | '/been-scammed'
     | '/history'
     | '/privacy'
     | '/trends'
-    | '/'
   id:
     | '__root__'
+    | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/about'
@@ -116,16 +117,23 @@ export interface FileRouteTypes {
     | '/_authenticated/history'
     | '/_authenticated/privacy'
     | '/_authenticated/trends'
-    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -139,13 +147,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/about': {
       id: '/_authenticated/about'
@@ -191,7 +192,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedPrivacyRoute: typeof AuthenticatedPrivacyRoute
   AuthenticatedTrendsRoute: typeof AuthenticatedTrendsRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -200,13 +200,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedPrivacyRoute: AuthenticatedPrivacyRoute,
   AuthenticatedTrendsRoute: AuthenticatedTrendsRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
 }
