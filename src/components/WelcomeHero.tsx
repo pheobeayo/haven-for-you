@@ -1,12 +1,26 @@
-import { ArrowDown, ArrowUpRight, ShieldCheck, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowDown, ArrowUpRight, LogIn, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/lang";
+import { useAuth } from "@/hooks/use-auth";
 import marketPhoto from "@/assets/welcome-market.jpg";
 
-export function WelcomeHero({ account = false, onStart }: { account?: boolean; onStart: () => void }) {
+const RETURNING_KEY = "sye-returning";
+
+export function WelcomeHero({ account = false, gate = false, onStart }: { account?: boolean; gate?: boolean; onStart: () => void }) {
   const pcm = useLang().lang === "pcm";
+  const { user } = useAuth();
+  const [returning, setReturning] = useState(false);
+  useEffect(() => {
+    try {
+      if (user) localStorage.setItem(RETURNING_KEY, "1");
+      setReturning(localStorage.getItem(RETURNING_KEY) === "1");
+    } catch { /* storage unavailable */ }
+  }, [user]);
+  const cta = "tap mt-7 bg-accent px-6 text-base font-bold text-accent-foreground hover:bg-accent/90";
   return <>
-    <section className="welcome-hero relative isolate overflow-hidden bg-primary text-primary-foreground">
+    <section id="welcome" className="welcome-hero relative isolate scroll-mt-0 overflow-hidden bg-primary text-primary-foreground">
       <img src={marketPhoto} width={1536} height={1024} alt={pcm ? "Trader and customer dey check phone together for market" : "A Nigerian trader and customer checking a phone together at the market"} className="welcome-photo absolute inset-0 h-full w-full object-cover" />
       <div className="welcome-shade absolute inset-0" />
       <div className="container-app relative flex h-full items-center">
@@ -15,7 +29,16 @@ export function WelcomeHero({ account = false, onStart }: { account?: boolean; o
           <h1 className="welcome-title font-extrabold leading-[1.13]">Shine Your Eye<span className="text-footer-accent">.</span></h1>
           <p className="mt-5 max-w-sm text-2xl font-bold leading-snug">{pcm ? "Check am before you pay or send goods." : "Check before you pay or send goods."}</p>
           <p className="mt-4 max-w-sm text-base leading-relaxed text-primary-foreground/90">{pcm ? "Fake alert? Strange link? Job wey look too sweet? Pause small. Make we check am together." : "A strange alert. A tempting offer. A link you’re not sure about. Take a breath. Let’s check it together."}</p>
-          <Button onClick={onStart} size="lg" className="tap mt-7 bg-accent px-6 text-base font-bold text-accent-foreground hover:bg-accent/90">{account ? pcm ? "Make we start" : "Get started" : pcm ? "Check a message" : "Check a message"}<ArrowUpRight aria-hidden /></Button>
+          {gate ? <>
+            {returning
+              ? <Button asChild size="lg" className={cta}><Link to="/auth" search={{ mode: "signin" }}><LogIn aria-hidden />{pcm ? "Enter your account" : "Sign in"}</Link></Button>
+              : <Button asChild size="lg" className={cta}><Link to="/auth" search={{ mode: "signup" }}>{pcm ? "Make we start" : "Get started"}<ArrowUpRight aria-hidden /></Link></Button>}
+            <p className="mt-3 text-sm text-primary-foreground/90">
+              {returning
+                ? <>{pcm ? "You never get account? " : "New here? "}<Link to="/auth" search={{ mode: "signup" }} className="font-bold underline">{pcm ? "Open account" : "Create an account"}</Link></>
+                : <>{pcm ? "You don get account before? " : "Already have an account? "}<Link to="/auth" search={{ mode: "signin" }} className="font-bold underline">{pcm ? "Enter your account" : "Sign in"}</Link></>}
+            </p>
+          </> : <Button onClick={onStart} size="lg" className={cta}>{account ? pcm ? "Make we start" : "Get started" : pcm ? "Check a message" : "Check a message"}<ArrowUpRight aria-hidden /></Button>}
           <p className="mt-4 flex items-center gap-2 text-sm text-primary-foreground/90"><ShieldCheck size={16} aria-hidden />{pcm ? "No PIN. No OTP. No wahala." : "No PINs. No OTPs. No pressure."}</p>
         </div>
       </div>
