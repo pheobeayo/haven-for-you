@@ -16,3 +16,4 @@
 - Scan history is saved client-side into `scans` under RLS only when signed in.
 - Mount the shared footer after the root Outlet inside LangProvider so every content page shares navigation and language state.
 - Help content lives in separate leaf routes using HelpPage; footer links to existing home sections use stable section IDs to avoid duplicating those sections.
+- Weekly trends come from the anonymous scan_events table (verdict, scam type, date only), written server-side after every successful scan so signed-out checks count too.
