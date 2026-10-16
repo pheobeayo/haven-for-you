@@ -13,10 +13,17 @@ const LABEL: Record<string, [string, string]> = {
   message_pattern: ["Message type", "Kind of message"],
 };
 
+function daysAgo(iso: string, pcm: boolean) {
+  const d = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 864e5));
+  if (d === 0) return pcm ? "today" : "today";
+  if (d === 1) return pcm ? "yesterday" : "yesterday";
+  return pcm ? `${d} days ago` : `${d} days ago`;
+}
+
 export function reportsLine(n: number, pcm: boolean) {
   return pcm
-    ? `⚠️ ${n} ${n === 1 ? "person" : "people"} don report am for last 30 days`
-    : `⚠️ Reported by ${n} ${n === 1 ? "person" : "people"} in the last 30 days`;
+    ? `⚠️ ${n} ${n === 1 ? "person" : "people"} don report am for last 90 days`
+    : `⚠️ Reported by ${n} ${n === 1 ? "person" : "people"} in the last 90 days`;
 }
 
 export function getDeviceId() {
@@ -31,20 +38,22 @@ export function getDeviceId() {
 export function CommunityMatches({ result }: { result: ScanResult }) {
   const { lang } = useLang();
   const pcm = lang === "pcm";
-  if (!result.community?.length) return null;
+  if (!result.community_matches?.length) return null;
   return (
     <div>
-      <h3 className="mb-2 text-xl font-bold">{pcm ? "Wetin people don report" : "Community reports"}</h3>
       <ul className="space-y-2">
-        {result.community.map((c) => (
-          <li key={c.type + c.value} className="rounded-xl border-2 border-foreground p-3">
-            <p className="break-all text-base">
-              <span className="font-bold">{LABEL[c.type]?.[pcm ? 1 : 0] ?? c.type}:</span> {c.value}
+        {result.community_matches.map((c) => (
+          <li key={c.type + c.value} className="rounded-xl bg-scam px-3 py-2 text-base font-bold text-verdict-foreground">
+            <p className="break-all">
+              ⚠️ {c.value_masked} {pcm ? "don be reported" : "was reported"} {c.reports} {c.reports === 1 ? (pcm ? "time" : "time") : pcm ? "times" : "times"} {pcm ? "by other users" : "by other users"}
+              {c.top_scam_type ? (pcm ? ` (mostly: ${c.top_scam_type}, latest ${daysAgo(c.latest, pcm)})` : ` (mostly: ${c.top_scam_type}, latest ${daysAgo(c.latest, pcm)})`) : ""}
             </p>
-            <p className="mt-2 inline-block rounded-full bg-scam px-3 py-1 text-base font-bold text-verdict-foreground">{reportsLine(c.reports, pcm)}</p>
           </li>
         ))}
       </ul>
+      <p className="mt-2 text-sm text-muted-foreground">
+        {pcm ? "Na users send these reports; we never verify dem." : "Reports come from users and are not verified."}
+      </p>
     </div>
   );
 }
