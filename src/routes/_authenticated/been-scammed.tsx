@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { HelpPage } from "@/components/HelpPage";
 import { useLang } from "@/lib/lang";
 
-export const Route = createFileRoute("/been-scammed")({
+export const Route = createFileRoute("/_authenticated/been-scammed")({
   head: () => ({ meta: [
     { title: "Been scammed? What to do now — Shine Your Eye" },
     { name: "description", content: "Five calm steps after a scam: contact your bank, keep evidence and report what happened." },

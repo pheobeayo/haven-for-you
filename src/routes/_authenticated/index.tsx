@@ -13,7 +13,7 @@ import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
 import { useLang } from "@/lib/lang";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Shine Your Eye — Check for scams before you pay" },
@@ -376,7 +376,7 @@ function Index() {
               <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words text-xs">{JSON.stringify(result, null, 2)}</pre>
             </details>
           )}
-          {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">{pcm ? "Sign in to save your checks." : "Sign in to save your checks."}</p>}
+          
         </div>
 
         <CheckNumber />

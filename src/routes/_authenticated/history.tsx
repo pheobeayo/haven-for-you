@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
 import { useAuth } from "@/hooks/use-auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { useLang } from "@/lib/lang";
 import { supabase } from "@/integrations/supabase/client";
 import type { ScanResult } from "@/lib/scan.functions";
 
-export const Route = createFileRoute("/history")({
+export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({
     meta: [
       { title: "My checks — Shine Your Eye" },
@@ -27,12 +30,14 @@ const chip: Record<string, string> = { scam: "bg-scam", suspicious: "bg-careful"
 function History() {
   const { user, loading } = useAuth();
   const nav = useNavigate();
+  const queryClient = useQueryClient();
+  const pcm = useLang().lang === "pcm";
   const [rows, setRows] = useState<Row[] | null>(null);
   const [open, setOpen] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
-    if (!user) { nav({ to: "/auth" }); return; }
+    if (!user) return;
     supabase.from("scans").select("id,input_preview,verdict,created_at,result").order("created_at", { ascending: false }).limit(50)
       .then(({ data }) => setRows((data as any) ?? []));
   }, [user, loading, nav]);
@@ -42,8 +47,8 @@ function History() {
       <AppHeader />
       <main className="container-app space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-extrabold">My checks</h1>
-          <button onClick={async () => { await supabase.auth.signOut(); nav({ to: "/" }); }} className="min-h-12 text-base font-bold underline">Sign out</button>
+          <h1 className="text-3xl font-extrabold">{pcm ? "My checks" : "My checks"}</h1>
+          <Button variant="link" onClick={async () => { await queryClient.cancelQueries(); queryClient.clear(); await supabase.auth.signOut(); await nav({ to: "/auth", replace: true }); }} className="min-h-12 text-base font-bold underline">{pcm ? "Comot" : "Sign out"}</Button>
         </div>
         {rows === null && <p className="text-lg">Loading…</p>}
         {rows?.length === 0 && (
