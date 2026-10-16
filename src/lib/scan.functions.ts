@@ -11,7 +11,7 @@ export type ScanResult = {
   explanation_pcm: string;
   onchain?: OnchainCheck[];
   identifiers?: Identifier[];
-  community?: ReportMatch[];
+  community_matches?: ReportMatch[];
   entities?: Entity[];
 };
 export type Entity = { kind: string; value: string; value_masked: string };
@@ -156,7 +156,7 @@ export const scanContent = createServerFn({ method: "POST" })
     const identifiers = extractIdentifiers(`${data.text}\n${data.link}`);
     const community = await lookupReports(identifiers);
     if (community.length)
-      prompt += `\nCommunity reports (facts from our database of user scam reports in the last 30 days; treat as a strong red flag and quote them as evidence):\n${community.map((c) => `- ${c.type.replace("_", " ")} ${c.value}: reported ${c.reports} time(s)`).join("\n")}\n`;
+      prompt += `\nCommunity reports (facts from our database of user scam reports in the last 90 days; treat as a strong red flag and quote them as evidence):\n${community.map((c) => `- This ${c.type.replace("_", " ")} was reported ${c.reports} time(s)${c.top_scam_type ? ` as a ${c.top_scam_type}` : ""}.`).join("\n")}\nA community match should raise the risk score. When there is no match, do not lower the risk score because of that.\n`;
     if (data.imageDataUrl) prompt += `\nA screenshot is attached. Read it carefully.\n`;
     content.push({ type: "text", text: prompt });
     if (data.imageDataUrl) content.push({ type: "image_url", image_url: { url: data.imageDataUrl } });
