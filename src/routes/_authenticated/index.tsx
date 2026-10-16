@@ -335,18 +335,6 @@ function Index() {
 
         </section>
 
-        <div className="hidden">
-          {EXAMPLES.map((ex) => (
-            <Button
-              key={ex.label}
-              onClick={() => { setMode("text"); setText(ex.text); setError(null); }}
-              className="tap rounded-full border-2 border-foreground bg-secondary px-4 text-base font-bold text-secondary-foreground"
-            >
-              {ex.label}
-            </Button>
-          ))}
-        </div>
-
         {error && (
           <div role="alert" className="rounded-2xl border-2 border-careful bg-careful-soft p-4 text-lg">
             {error}
