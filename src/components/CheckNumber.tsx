@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Search } from "lucide-react";
 import { checkValue } from "@/lib/reports.functions";
 import { useLang } from "@/lib/lang";
+import { useAuth } from "@/hooks/use-auth";
 import { getDeviceId } from "@/components/CommunityReports";
 import type { LookupResult } from "@/lib/reports.functions";
 
@@ -19,6 +21,8 @@ function daysAgo(iso: string) {
 
 export function CheckNumber() {
   const { lang } = useLang();
+  const { user, loading } = useAuth();
+  const nav = useNavigate();
   const pcm = lang === "pcm";
   const check = useServerFn(checkValue);
   const [value, setValue] = useState("");
@@ -28,6 +32,10 @@ export function CheckNumber() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy || !value.trim()) return;
+    if (!loading && !user) {
+      void nav({ to: "/auth", search: { redirect: "/" } });
+      return;
+    }
     setBusy(true);
     setOut(null);
     try {

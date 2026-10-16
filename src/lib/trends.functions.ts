@@ -1,4 +1,3 @@
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createServerFn } from "@tanstack/react-start";
 import { queryOptions } from "@tanstack/react-query";
 
@@ -12,7 +11,8 @@ export type Trends = {
 
 const titleCase = (s: string) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
-export const getTrends = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async (): Promise<Trends> => {
+// Public: anonymous aggregate counts only, no user data.
+export const getTrends = createServerFn({ method: "GET" }).handler(async (): Promise<Trends> => {
   try {
     const { fetchTrends } = await import("./reports.server");
     const rows = await fetchTrends();
