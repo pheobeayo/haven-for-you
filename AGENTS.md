@@ -14,3 +14,5 @@
 - The AI result JSON is validated server-side with one retry; errors return `{ok:false, code, message}` instead of throwing so the UI can show friendly text.
 - Screenshots are compressed in the browser and sent inline, never stored — saves data on slow phones and avoids keeping sensitive images.
 - Scan history is saved client-side into `scans` under RLS only when signed in.
+- Mount the shared footer after the root Outlet inside LangProvider so every content page shares navigation and language state.
+- Help content lives in separate leaf routes using HelpPage; footer links to existing home sections use stable section IDs to avoid duplicating those sections.

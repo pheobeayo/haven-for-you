@@ -365,7 +365,7 @@ function Index() {
           {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">{pcm ? "Sign in to save your checks." : "Sign in to save your checks."}</p>}
         </div>
 
-        <section aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
+        <section id="how-it-works" aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
           <h2 className="text-xl font-extrabold">{pcm ? "How e work" : "How it works"}</h2>
           <div className="mt-3 grid grid-cols-3 gap-3 md:gap-6">
             {STEPS.map(({ Icon, title, pcmTitle, body, pcmBody }) => (
@@ -380,7 +380,7 @@ function Index() {
           </div>
         </section>
 
-        <section aria-label="Common scams in Nigeria">
+        <section id="common-scams" aria-label="Common scams in Nigeria">
           <h2 className="text-xl font-extrabold">{pcm ? "Common scams for Nigeria" : "Common scams in Nigeria"}</h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {COMMON_SCAMS.map((s) => (
