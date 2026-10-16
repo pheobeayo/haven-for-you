@@ -1,4 +1,6 @@
 # Tasks
+- [ ] Refresh the welcome and signed-in home pages without changing account access or checking.
+- [ ] Verify English/Pidgin, account actions, and phone/desktop presentation.
 - [x] Require authenticated access to app pages and scan/report/trends actions.
 - [x] Add profile display name and English/Pidgin auth flows.
 - [x] Verify signed-out redirects and signed-in checking/history.
