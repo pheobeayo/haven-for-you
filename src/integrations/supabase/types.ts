@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      scam_reports: {
+        Row: {
+          created_at: string
+          demo: boolean
+          device_hash: string | null
+          id: string
+          scam_type: string
+          type: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          demo?: boolean
+          device_hash?: string | null
+          id?: string
+          scam_type?: string
+          type: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          demo?: boolean
+          device_hash?: string | null
+          id?: string
+          scam_type?: string
+          type?: string
+          value?: string
+        }
+        Relationships: []
+      }
       scans: {
         Row: {
           created_at: string
@@ -55,7 +85,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      lookup_reports: {
+        Args: { _items: Json }
+        Returns: {
+          reports: number
+          type: string
+          value: string
+        }[]
+      }
+      report_scam: {
+        Args: { _device: string; _items: Json; _scam_type: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

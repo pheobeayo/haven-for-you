@@ -10,11 +10,15 @@ export type ScanResult = {
   explanation_en: string;
   explanation_pcm: string;
   onchain?: OnchainCheck[];
+  identifiers?: Identifier[];
+  community?: ReportMatch[];
 };
 export type ScanResponse =
   | { ok: true; result: ScanResult }
   | { ok: false; code: "rate_limit" | "no_credits" | "bad_input" | "ai_error"; message: string };
 
+import { extractIdentifiers, type Identifier } from "./identifiers";
+import { lookupReports, type ReportMatch } from "./reports.server";
 import { goplusToken, type OnchainCheck } from "./goplus";
 import { checkUrl, detectKind, explorerFor, NETWORKS, type Network } from "./link-checks";
 
@@ -129,6 +133,10 @@ export const scanContent = createServerFn({ method: "POST" })
         prompt += `\nLink (we did NOT open it): ${data.link.trim()}\nAutomatic checks found: ${findings.length ? findings.map((f) => "- " + f).join("\n") : "nothing unusual"}\nUse these findings as red flags where relevant, quoting the exact part of the link as evidence. Do not claim to have visited the site.\n`;
       }
     }
+    const identifiers = extractIdentifiers(`${data.text}\n${data.link}`);
+    const community = await lookupReports(identifiers);
+    if (community.length)
+      prompt += `\nCommunity reports (facts from our database of user scam reports in the last 30 days; treat as a strong red flag and quote them as evidence):\n${community.map((c) => `- ${c.type.replace("_", " ")} ${c.value}: reported ${c.reports} time(s)`).join("\n")}\n`;
     if (data.imageDataUrl) prompt += `\nA screenshot is attached. Read it carefully.\n`;
     content.push({ type: "text", text: prompt });
     if (data.imageDataUrl) content.push({ type: "image_url", image_url: { url: data.imageDataUrl } });
@@ -145,7 +153,7 @@ export const scanContent = createServerFn({ method: "POST" })
         return { ok: false, code: "ai_error", message: "We could not check this right now. Please try again." };
       }
       const v = validate(r.text);
-      if (v) return { ok: true, result: onchain ? { ...v, onchain } : v };
+      if (v) return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community } };
       console.error("Invalid AI JSON", r.text.slice(0, 300));
     }
     return { ok: false, code: "ai_error", message: "Sorry, we could not read the answer. Please try again." };
