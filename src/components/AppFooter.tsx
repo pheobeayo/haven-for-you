@@ -41,6 +41,7 @@ export function AppFooter() {
           <Link to="/" hash="how-it-works" hashScrollIntoView className={linkClass}>{pcm ? "How e work" : "How it works"}</Link>
           <Link to="/history" className={linkClass}>{pcm ? "My checks" : "My checks"}</Link>
           <Link to="/" hash="common-scams" hashScrollIntoView className={linkClass}>{pcm ? "Common scams" : "Common scams"}</Link>
+          <Link to="/trends" className={linkClass}>{pcm ? "Scam trends" : "Scam trends"}</Link>
         </nav>
         <nav aria-label="Help" className="min-w-0">
           <h2 className="mb-2 text-lg font-bold text-footer-accent">{pcm ? "Help" : "Help"}</h2>

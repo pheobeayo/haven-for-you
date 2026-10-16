@@ -44,6 +44,27 @@ export type Database = {
         }
         Relationships: []
       }
+      scan_events: {
+        Row: {
+          created_at: string
+          id: string
+          scam_type: string
+          verdict: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          scam_type?: string
+          verdict: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          scam_type?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
       scans: {
         Row: {
           created_at: string
@@ -93,9 +114,21 @@ export type Database = {
           value: string
         }[]
       }
+      record_scan_event: {
+        Args: { _scam_type: string; _verdict: string }
+        Returns: undefined
+      }
       report_scam: {
         Args: { _device: string; _items: Json; _scam_type: string }
         Returns: Json
+      }
+      scan_trends: {
+        Args: never
+        Returns: {
+          n: number
+          scam_type: string
+          verdict: string
+        }[]
       }
     }
     Enums: {

@@ -33,3 +33,15 @@ export async function hashDevice(id: string) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("sye:" + id));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+
+/** Anonymous count only: verdict + scam type + date. Never throws. */
+export async function recordScanEvent(verdict: string, scamType: string) {
+  try { await rpc("record_scan_event", { _verdict: verdict, _scam_type: scamType }); }
+  catch (e) { console.error("recordScanEvent failed", e); }
+}
+
+export type TrendRow = { scam_type: string; verdict: string; n: number };
+export async function fetchTrends(): Promise<TrendRow[]> {
+  const rows = (await rpc("scan_trends", {})) as TrendRow[];
+  return rows.map((r) => ({ ...r, n: Number(r.n) }));
+}

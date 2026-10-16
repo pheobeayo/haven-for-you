@@ -18,7 +18,7 @@ export type ScanResponse =
   | { ok: false; code: "rate_limit" | "no_credits" | "bad_input" | "ai_error"; message: string };
 
 import { extractIdentifiers, type Identifier } from "./identifiers";
-import { lookupReports, type ReportMatch } from "./reports.server";
+import { lookupReports, recordScanEvent, type ReportMatch } from "./reports.server";
 import { goplusToken, type OnchainCheck } from "./goplus";
 import { checkUrl, detectKind, explorerFor, NETWORKS, type Network } from "./link-checks";
 
@@ -153,7 +153,10 @@ export const scanContent = createServerFn({ method: "POST" })
         return { ok: false, code: "ai_error", message: "We could not check this right now. Please try again." };
       }
       const v = validate(r.text);
-      if (v) return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community } };
+      if (v) {
+        await recordScanEvent(v.verdict, v.scam_type);
+        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community } };
+      }
       console.error("Invalid AI JSON", r.text.slice(0, 300));
     }
     return { ok: false, code: "ai_error", message: "Sorry, we could not read the answer. Please try again." };
