@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Rules
+- Use the shared WelcomeHero for account entry and the authenticated home; keep promotional presentation separate from account and checking logic.
 - AI scanning lives in `src/lib/scan.functions.ts` with authenticated createServerFn middleware — keeps the key server-side and rejects signed-out callers.
 - The AI result JSON is validated server-side with one retry; errors return `{ok:false, code, message}` instead of throwing so the UI can show friendly text.
 - Screenshots are compressed in the browser and sent inline, never stored — saves data on slow phones and avoids keeping sensitive images.

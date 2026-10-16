@@ -88,7 +88,7 @@
     font-family: var(--font-sans);
     -webkit-tap-highlight-color: transparent;
   }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0; }
 }
 
 @utility tap { min-height: 3.5rem; }
@@ -104,3 +104,30 @@
 @utility text-fluid-hero { font-size: clamp(2rem, 5vw, 3.75rem); }
 @utility text-fluid-body { font-size: clamp(1rem, 1.2vw, 1.125rem); }
 html, body { overflow-x: hidden; }
+
+/* Editorial welcome surfaces share the existing brand and verdict tokens. */
+:root {
+  --welcome-shade: linear-gradient(90deg, color-mix(in oklch, var(--primary) 85%, transparent) 0%, color-mix(in oklch, var(--primary) 65%, transparent) 35%, transparent 66%);
+  --welcome-mobile-shade: linear-gradient(180deg, color-mix(in oklch, var(--primary) 95%, transparent) 0%, color-mix(in oklch, var(--primary) 88%, transparent) 43%, color-mix(in oklch, var(--primary) 12%, transparent) 85%);
+  --welcome-shadow: 0 8px 30px color-mix(in oklch, var(--primary) 7%, transparent);
+}
+.welcome-hero { height: 540px; }
+.welcome-photo { object-position: center 43%; }
+.welcome-shade { background: var(--welcome-shade); }
+.welcome-title { font-size: 52px; }
+.account-panel { box-shadow: var(--welcome-shadow); }
+.home-checker { box-shadow: var(--welcome-shadow); }
+.welcome-hero .welcome-copy { animation: welcome-in 650ms ease-out both; }
+@keyframes welcome-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (width < 768px) {
+  .welcome-hero { height: 560px; }
+  .welcome-hero .container-app { align-items: flex-start; }
+  .welcome-copy { padding-top: 30px; max-width: 100%; }
+  .welcome-copy > p:first-child { font-size: 11px; margin-bottom: 14px; }
+  .welcome-title { font-size: 36px; }
+  .welcome-copy > p:nth-child(3) { font-size: 22px; max-width: 310px; }
+  .welcome-copy > p:nth-child(4) { max-width: 330px; }
+  .welcome-photo { object-position: 70% bottom; }
+  .welcome-shade { background: var(--welcome-mobile-shade); }
+}
+@media (prefers-reduced-motion: reduce) { .welcome-hero .welcome-copy { animation: none; } }
