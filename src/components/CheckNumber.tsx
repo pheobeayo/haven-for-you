@@ -33,7 +33,7 @@ export function CheckNumber() {
     e.preventDefault();
     if (busy || !value.trim()) return;
     if (!loading && !user) {
-      void nav({ to: "/auth", search: { redirect: "/" } });
+      document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     setBusy(true);

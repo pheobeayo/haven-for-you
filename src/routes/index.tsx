@@ -153,7 +153,7 @@ function Index() {
     if (busyRef.current) return;
     if (!loading && !user) {
       try { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); } catch { /* storage unavailable */ }
-      void nav({ to: "/auth", search: { redirect: "/" } });
+      document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     setCanRetry(false);
@@ -216,7 +216,7 @@ function Index() {
     <div className="min-h-screen pb-12">
       <AppHeader />
       <InstallPrompt />
-      <WelcomeHero onStart={() => document.getElementById("check-message")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+      <WelcomeHero gate={!loading && !user} onStart={() => document.getElementById("check-message")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
       <main className="container-app space-y-10 py-10 md:space-y-14">
         <section id="check-message" className="grid scroll-mt-6 gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-12">
         <div className="min-w-0 lg:pt-4">
