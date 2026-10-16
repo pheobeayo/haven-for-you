@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { parseSingle, type Identifier, type ReportType } from "./identifiers";
+import { parseSingle, type Identifier } from "./identifiers";
 import { hashDevice, lookupReports, saveReport } from "./reports.server";
 
-const TYPES: ReportType[] = ["phone_number", "bank_account", "link", "wallet", "message_pattern"];
 
 // "report-scam": accepts {items:[{kind,value}], scam_type, device_id} and the older UI shape.
 export const reportScam = createServerFn({ method: "POST" })
