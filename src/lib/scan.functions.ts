@@ -34,8 +34,9 @@ Be careful not to over-flag. Normal bank notices (transaction alerts, balance an
 If the image is a bank credit alert or transfer receipt, check for signs of a fake: sender is a regular phone number or app notification instead of the bank; wrong or inconsistent bank name, logo, fonts or spacing; amounts formatted wrongly (e.g. missing commas, wrong currency symbol); balance that doesn't make sense; date or time errors; edited-looking text. Always tell the user to confirm by checking their bank app or calling the bank, never by trusting the alert.
 Quote the exact words from the message as evidence for every red flag. Do not invent evidence. If the message looks normal, say 'safe' and explain why. Give 2-4 short, practical next steps. Write explanation_en in plain simple English and explanation_pcm in natural Nigerian Pidgin. Return JSON only.
 Return ONLY JSON, no markdown, exactly this shape:
-{"verdict":"scam"|"suspicious"|"safe","risk_score":0-100,"scam_type":string,"red_flags":[{"flag":string,"evidence":string}],"what_to_do":[string],"explanation_en":string,"explanation_pcm":string}
-For "safe", red_flags may be empty and scam_type should be "None found".`;
+{"verdict":"scam"|"suspicious"|"safe","risk_score":0-100,"scam_type":string,"red_flags":[{"flag":string,"evidence":string}],"what_to_do":[string],"explanation_en":string,"explanation_pcm":string,"entities":[{"kind":"phone"|"bank_account"|"link"|"wallet","value":string}]}
+For "safe", red_flags may be empty and scam_type should be "None found".
+In "entities", list every possible scammer detail you can see in the message or screenshot: Nigerian phone numbers, 10-digit bank account numbers, domains from links, and 0x wallet addresses. Copy each value exactly as written. If none, use an empty array.`;
 
 function validate(raw: string): ScanResult | null {
   try {
