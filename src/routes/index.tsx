@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { WelcomeHero } from "@/components/WelcomeHero";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
 import { useLang } from "@/lib/lang";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/")({
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Shine Your Eye — Check for scams before you pay" },
@@ -111,7 +111,8 @@ async function compress(file: File): Promise<string> {
 
 function Index() {
   const scan = useServerFn(scanContent);
-  const { user } = useAuth();
+  const nav = useNavigate();
+  const { user, loading } = useAuth();
   const { lang } = useLang();
   const pcm = lang === "pcm";
   const [mode, setMode] = useState<Mode>("text");
