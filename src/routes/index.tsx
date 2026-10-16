@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Camera, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { ResultCard } from "@/components/ResultCard";
+import { CheckNumber } from "@/components/CheckNumber";
 import { scanContent, type ScanResult } from "@/lib/scan.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { NETWORKS, WALLET_RE, type Network } from "@/lib/link-checks";
@@ -364,6 +365,8 @@ function Index() {
           )}
           {result && !user && <p className="mt-3 text-center text-base text-muted-foreground">{pcm ? "Sign in to save your checks." : "Sign in to save your checks."}</p>}
         </div>
+
+        <CheckNumber />
 
         <section id="how-it-works" aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
           <h2 className="text-xl font-extrabold">{pcm ? "How e work" : "How it works"}</h2>
