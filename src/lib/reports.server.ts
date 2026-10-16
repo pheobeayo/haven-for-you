@@ -1,7 +1,7 @@
 import type { Identifier } from "./identifiers";
 import { maskValue, normalizeValue, toKind, type ReportKind } from "./report-normalize";
 
-export type ReportMatch = Identifier & { reports: number };
+export type ReportMatch = Identifier & { reports: number; value_masked: string; top_scam_type: string; latest: string };
 
 async function admin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -19,7 +19,7 @@ async function rpc(fn: string, body: unknown): Promise<any> {
   return res.json();
 }
 
-/** Matches from the last 30 days; never throws (empty on failure). Values are normalised first. */
+/** Matches from the last 90 days; never throws (empty on failure). Values are normalised first. */
 export async function lookupReports(items: Identifier[]): Promise<ReportMatch[]> {
   const norm = items
     .map((i) => {
@@ -32,18 +32,23 @@ export async function lookupReports(items: Identifier[]): Promise<ReportMatch[]>
   if (!norm.length) return [];
   try {
     const db = await admin();
-    const since = new Date(Date.now() - 30 * 864e5).toISOString();
+    const since = new Date(Date.now() - 90 * 864e5).toISOString();
     const { data, error } = await db
       .from("scam_reports")
-      .select("kind, value_normalized")
+      .select("kind, value_normalized, scam_type, created_at")
       .in("value_normalized", [...new Set(norm.map((n) => n.v))])
       .gt("created_at", since)
       .limit(5000);
     if (error) throw error;
     const out: ReportMatch[] = [];
     for (const n of norm) {
-      const c = (data ?? []).filter((r) => r.kind === n.kind && r.value_normalized === n.v).length;
-      if (c) out.push({ ...n.item, reports: c });
+      const rows = (data ?? []).filter((r) => r.kind === n.kind && r.value_normalized === n.v);
+      if (!rows.length) continue;
+      const counts = new Map<string, number>();
+      for (const r of rows) if (r.scam_type) counts.set(r.scam_type, (counts.get(r.scam_type) ?? 0) + 1);
+      const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+      const latest = rows.reduce((m, r) => (r.created_at > m ? r.created_at : m), rows[0]?.created_at ?? "");
+      out.push({ ...n.item, reports: rows.length, value_masked: maskValue(n.kind, n.v), top_scam_type: top, latest });
     }
     return out;
   } catch (e) {
