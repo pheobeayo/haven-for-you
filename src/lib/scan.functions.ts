@@ -183,7 +183,7 @@ export const scanContent = createServerFn({ method: "POST" })
           .map((e) => ({ type: e.kind === "phone" ? "phone_number" : e.kind, value: e.value }) as Identifier);
         const extraMatches = extra.length ? await lookupReports(extra) : [];
         const community_matches = [...community];
-        for (const m of extraMatches) if (!community_matches.some((c) => c.type === m.type && c.value === m.value)) community_matches.push(m);
+        for (const m of extraMatches) if (!community_matches.some((c) => c.value_masked === m.value_masked)) community_matches.push(m);
         return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community_matches, entities } };
       }
       console.error("Invalid AI JSON", r.text.slice(0, 300));
