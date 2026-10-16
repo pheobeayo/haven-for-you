@@ -28,7 +28,7 @@ export function extractIdentifiers(text: string): Identifier[] {
   const noWallet = text.replace(/0x[a-fA-F0-9]{40}/g, " ");
   for (const m of noWallet.matchAll(/(?:\+?234[\s-]?|0)[789][01](?:[\s-]?\d){8}/g)) add("phone_number", normalizePhone(m[0]));
   for (const m of noWallet.matchAll(/(?<![\d+])\d{10}(?!\d)/g)) add("bank_account", m[0]);
-  for (const m of noWallet.matchAll(/\b(?:https?:\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|ng|net|org|io|xyz|app|info|link|site|online|top|ly|co|me|gd|gl|cc|vip|live|shop)\b(?:\/\S*)?/gi))
+  for (const m of noWallet.matchAll(/\b(?:https?:\/\/)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|ng|net|org|io|xyz|app|info|link|site|online|top|ly|co|me|gd|gl|cc|vip|live|shop|example)\b(?:\/\S*)?/gi))
     add("link", normalizeDomain(m[0]));
   return [...out.values()].slice(0, 20);
 }
