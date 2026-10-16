@@ -176,7 +176,15 @@ export const scanContent = createServerFn({ method: "POST" })
       if (v) {
         await recordScanEvent(v.verdict, v.scam_type);
         const entities = mergeEntities(identifiers, (v as any).entities);
-        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community, entities } };
+        // Look up any AI-found entities (e.g. from screenshots) not already checked.
+        const seen = new Set(identifiers.map((i) => i.type + ":" + i.value));
+        const extra = entities
+          .filter((e) => !seen.has(e.kind === "phone" ? "phone_number:" + e.value : e.kind + ":" + e.value))
+          .map((e) => ({ type: e.kind === "phone" ? "phone_number" : e.kind, value: e.value }));
+        const extraMatches = extra.length ? await lookupReports(extra) : [];
+        const community_matches = [...community];
+        for (const m of extraMatches) if (!community_matches.some((c) => c.type === m.type && c.value === m.value)) community_matches.push(m);
+        return { ok: true, result: { ...v, ...(onchain ? { onchain } : {}), identifiers, community_matches, entities } };
       }
       console.error("Invalid AI JSON", r.text.slice(0, 300));
     }
