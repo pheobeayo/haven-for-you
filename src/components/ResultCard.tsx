@@ -2,6 +2,7 @@ import { AlertTriangle, CheckCircle2, OctagonX } from "lucide-react";
 import type { ScanResult } from "@/lib/scan.functions";
 import { useLang } from "@/lib/lang";
 import { ShareWarning } from "@/components/ShareWarning";
+import { CommunityMatches, ReportButton } from "@/components/CommunityReports";
 
 const V = {
   scam: { word: "Likely scam", pcm: "E be like scam", Icon: OctagonX, bg: "bg-scam", soft: "bg-scam-soft", text: "text-scam" },
@@ -56,6 +57,8 @@ export function ResultCard({ result, onCheckAnother }: { result: ScanResult; onC
       </div>
 
       <div className="min-w-0 space-y-5 p-4 lg:p-6 [&_p]:max-w-[65ch]">
+        <CommunityMatches result={result} />
+        <ReportButton result={result} />
         {result.onchain && result.onchain.length > 0 && (
           <div>
             <h3 className="mb-2 text-xl font-bold">{pcm ? "Wetin blockchain show" : "On-chain checks"}</h3>
