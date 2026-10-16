@@ -32,15 +32,15 @@ type Mode = "text" | "photo" | "link";
 const EXAMPLES = [
   {
     label: "Fake credit alert",
-    text: "Acct: 01**89 Credit: NGN50,000.00 Desc: TRF/OLUWASEUN Bal: NGN52,310.55. Your BVN has been suspended. Verify now at http://gtb-verify.cc to avoid account closure.",
+    text: "Acct: 01**89 Credit: NGN50,000.00 Desc: TRF/OLUWASEUN Bal: NGN52,310.55. Mistake transfer, please reverse to me. Call 08030000000 or confirm at http://gtb-alert-verify.example now.",
   },
   {
     label: "Job offer fee",
-    text: "CONGRATULATIONS! You have been selected for the Dangote Graduate Trainee role. Salary NGN350,000/month. To secure your slot, pay a refundable registration fee of NGN15,000 to 0123456789 Opay within 24 hours.",
+    text: "CONGRATULATIONS! You have been selected for the Dangote Graduate Trainee role. Salary NGN350,000/month. To secure your slot, pay a refundable registration fee of NGN15,000 to 0000000001 Opay within 24 hours.",
   },
   {
     label: "Crypto airdrop",
-    text: "Binance is giving away 0.5 BTC to the first 500 Nigerians! Connect your wallet at binance-airdrop.top and pay a small gas fee of $20 to claim your reward. Offer ends tonight!",
+    text: "Binance is giving away 500 USDT to the first 500 Nigerians! Claim at free-usdt-airdrop.example and send a small gas fee of $20 to 0x000000000000000000000000000000000000dEaD to unlock your reward. Offer ends tonight!",
   },
 ];
 
