@@ -1,3 +1,4 @@
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createServerFn } from "@tanstack/react-start";
 import { parseSingle } from "./identifiers";
 import { hashDevice, lookupSingle, saveReport } from "./reports.server";
@@ -7,6 +8,7 @@ export type LookupResult = { kind: string; value_masked: string; count: number; 
 
 // "report-scam": accepts {items:[{kind,value}], scam_type, device_id} and the older UI shape.
 export const reportScam = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: { deviceId?: string; device_id?: string; scamType?: string; scam_type?: string; items: ({ kind?: string; type?: string; value: string })[] }) => {
     const deviceId = String(input.device_id ?? input.deviceId ?? "").slice(0, 100);
     const scamType = String(input.scam_type ?? input.scamType ?? "").slice(0, 200);
@@ -29,6 +31,7 @@ export const reportScam = createServerFn({ method: "POST" })
 
 // "lookup-report": { value, deviceId } -> { kind, value_masked, count, top_scam_type, latest_date } (last 90 days).
 export const checkValue = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: { value: string; deviceId?: string; device_id?: string }) => ({
     value: String(input.value ?? "").slice(0, 300),
     deviceId: String(input.device_id ?? input.deviceId ?? "").slice(0, 100),

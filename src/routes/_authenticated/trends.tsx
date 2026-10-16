@@ -4,7 +4,7 @@ import { HelpPage } from "@/components/HelpPage";
 import { useLang } from "@/lib/lang";
 import { trendsQuery, watchFor } from "@/lib/trends.functions";
 
-export const Route = createFileRoute("/trends")({
+export const Route = createFileRoute("/_authenticated/trends")({
   head: () => ({ meta: [
     { title: "Scam trends this week — Shine Your Eye" },
     { name: "description", content: "The most common scams people checked in Nigeria over the last 7 days, and what to watch for." },

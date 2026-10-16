@@ -1,3 +1,4 @@
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createServerFn } from "@tanstack/react-start";
 
 export type Verdict = "scam" | "suspicious" | "safe";
@@ -116,6 +117,7 @@ function mergeEntities(identifiers: Identifier[], aiEntities: { kind: string; va
 }
 
 export const scanContent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: ScanInput) => {
     const text = (input.text ?? "").slice(0, 5000);
     const link = (input.link ?? "").slice(0, 500);
