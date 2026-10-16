@@ -4,10 +4,10 @@ import { Loader2, Search } from "lucide-react";
 import { checkValue } from "@/lib/reports.functions";
 import { useLang } from "@/lib/lang";
 import { getDeviceId } from "@/components/CommunityReports";
-import type { SingleLookup } from "@/lib/reports.server";
+import type { LookupResult } from "@/lib/reports.functions";
 
 type Out =
-  | { kind: "hit" | "none"; r: SingleLookup }
+  | { kind: "hit" | "none"; r: LookupResult }
   | { kind: "bad" | "limit" | "error" };
 
 function daysAgo(iso: string) {

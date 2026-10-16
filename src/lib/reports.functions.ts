@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { parseSingle } from "./identifiers";
-import { hashDevice, lookupSingle, saveReport, type SingleLookup } from "./reports.server";
+import { hashDevice, lookupSingle, saveReport } from "./reports.server";
+
+export type LookupResult = { kind: string; value_masked: string; count: number; top_scam_type: string; latest_date: string };
 
 
 // "report-scam": accepts {items:[{kind,value}], scam_type, device_id} and the older UI shape.
@@ -31,7 +33,7 @@ export const checkValue = createServerFn({ method: "POST" })
     value: String(input.value ?? "").slice(0, 300),
     deviceId: String(input.device_id ?? input.deviceId ?? "").slice(0, 100),
   }))
-  .handler(async ({ data }): Promise<{ ok: true; result: SingleLookup } | { ok: false; code: "bad_input" | "rate_limit" | "error" }> => {
+  .handler(async ({ data }): Promise<{ ok: true; result: LookupResult } | { ok: false; code: "bad_input" | "rate_limit" | "error" }> => {
     const item = parseSingle(data.value);
     if (!item || data.deviceId.length < 16) return { ok: false, code: "bad_input" };
     try {
