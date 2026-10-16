@@ -15,7 +15,10 @@ function safeDestination(value: unknown) {
   return ["/", "/history", "/trends", "/about", "/privacy", "/been-scammed"].includes(pathname) ? value : "/";
 }
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({ redirect: safeDestination(search['redirect']) }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string; mode?: "signup" | "signin" } => ({
+    redirect: search['redirect'] === undefined ? undefined : safeDestination(search['redirect']),
+    mode: search['mode'] === "signup" ? "signup" : search['mode'] === "signin" ? "signin" : undefined,
+  }),
   head: () => ({ meta: [
     { title: "Sign in or create an account — Shine Your Eye" },
     { name: "description", content: "Create an account or sign in to check for scams and keep your private history. English and Nigerian Pidgin." },
@@ -28,10 +31,13 @@ export const Route = createFileRoute("/auth")({
 });
 function AuthPage() {
   const nav = useNavigate();
-  const redirect = Route.useSearch().redirect ?? "/";
+  const search = Route.useSearch();
+  const redirect = search.redirect ?? "/";
   const { user, loading } = useAuth();
   const pcm = useLang().lang === "pcm";
-  const [signup, setSignup] = useState(false);
+  const [signup, setSignup] = useState(search.mode === "signup");
+  useEffect(() => { if (search.mode) { setSignup(search.mode === "signup"); setMsg(null); } }, [search.mode]);
+  useEffect(() => { if (search.mode) document.getElementById("your-account")?.scrollIntoView({ block: "start" }); }, [search.mode]);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [pw, setPw] = useState("");
