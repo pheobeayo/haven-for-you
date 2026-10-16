@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { WelcomeHero } from "@/components/WelcomeHero";
+import { Button } from "@/components/ui/button";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { useServerFn } from "@tanstack/react-start";
 import { Camera, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
@@ -200,43 +202,36 @@ function Index() {
     <div className="min-h-screen pb-12">
       <AppHeader />
       <InstallPrompt />
-      <main className="container-app space-y-5 md:space-y-8 2xl:space-y-12">
-        <div className="grid gap-5 lg:min-h-[80vh] lg:grid-cols-2 lg:items-center lg:gap-12 2xl:gap-16">
-        <div className="min-w-0 text-center lg:text-left">
-          <div className="flex flex-col items-center gap-3 lg:flex-row lg:items-center lg:gap-5">
-            <img src="/icon-512.png" alt="" aria-hidden className="h-24 w-24 shrink-0 lg:h-32 lg:w-32 2xl:h-40 2xl:w-40" />
-            <h1 className="text-fluid-hero font-extrabold leading-tight text-primary">
-              Shine Your Eye
-            </h1>
-          </div>
-          <p className="mt-2 text-lg text-muted-foreground lg:text-xl 2xl:text-2xl">{pcm ? "Check am before you pay or send goods." : "Check before you pay or send goods."}</p>
-          <p className="text-fluid-body mt-6 hidden max-w-[65ch] text-muted-foreground lg:block">{pcm ? "No share your PIN, password, OTP or full account number. We no go ever ask you." : "Never share your PIN, password, OTP or full account number. We will never ask for them."}</p>
-          <div className="mt-6 hidden flex-nowrap gap-2 lg:flex">
-          {EXAMPLES.map((ex) => (
-            <button
-              key={ex.label}
-              onClick={() => { setMode("text"); setText(ex.text); setError(null); }}
-              className="tap whitespace-nowrap rounded-full border-2 border-foreground bg-secondary px-4 text-base font-bold text-secondary-foreground"
-            >
-              {ex.label}
-            </button>
+      <WelcomeHero onStart={() => document.getElementById("check-message")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+      <main className="container-app space-y-10 py-10 md:space-y-14">
+        <section id="check-message" className="grid scroll-mt-6 gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-12">
+        <div className="min-w-0 lg:pt-4">
+          <p className="mb-3 text-sm font-bold text-careful">{pcm ? "NO LET SCAM RUSH YOU" : "DON’T LET A SCAM RUSH YOU"}</p>
+          <h2 className="text-3xl font-bold leading-tight text-primary">{pcm ? "Something no look right?" : "Something doesn’t feel right?"}</h2>
+          <p className="mt-4 text-lg text-muted-foreground">{pcm ? "Put am here. Make we look for warning signs before you make your next move." : "Put it here. Let’s look for warning signs before you make your next move."}</p>
+          <p className="mt-6 text-sm font-bold text-primary">{pcm ? "Try one example" : "Try an example"}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+          {EXAMPLES.map((ex, i) => (
+            <Button variant="outline" key={ex.label} onClick={() => { setMode("text"); setText(ex.text); setError(null); }} className="tap whitespace-normal rounded-lg px-3 text-sm font-bold">
+              {pcm ? ["Fake credit alert", "Job wey need fee", "Crypto airdrop"][i] : ex.label}
+            </Button>
           ))}
           </div>
+          <p className="mt-5 text-sm text-muted-foreground">{pcm ? "No share your PIN, password, OTP or full account number. We no go ever ask you." : "Never share your PIN, password, OTP or full account number. We will never ask for them."}</p>
         </div>
-
-        <div className="min-w-0 rounded-2xl border-2 border-foreground bg-card p-3 md:p-4 2xl:p-6 shadow-[4px_4px_0_0_var(--foreground)]">
+        <div className="home-checker min-w-0 rounded-lg border border-border bg-card p-3 sm:p-5">
           <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="What do you want to check?">
             {tabs.map(({ id, label, Icon }) => (
-              <button
+              <Button
                 key={id}
                 role="tab"
                 aria-selected={mode === id}
                 onClick={() => { setMode(id); setError(null); }}
-                className={`flex min-h-16 flex-col items-center justify-center gap-1 rounded-xl border-2 text-sm font-bold leading-tight ${mode === id ? "border-foreground bg-primary text-primary-foreground" : "border-input bg-secondary text-secondary-foreground"}`}
+                className={`flex min-h-16 flex-col items-center justify-center gap-1 rounded-lg border text-sm font-bold leading-tight ${mode === id ? "border-primary bg-primary text-primary-foreground" : "border-input bg-secondary text-secondary-foreground"}`}
               >
                 <Icon className="h-6 w-6 shrink-0" aria-hidden />
                 {label}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -248,7 +243,7 @@ function Index() {
                 rows={6}
                 aria-label="Paste the message or alert"
                 placeholder={pcm ? "Paste di SMS, WhatsApp message or email for here" : "Paste the SMS, WhatsApp message or email here"}
-                className="block w-full max-w-[720px] mx-auto rounded-xl border-2 border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
+                className="block w-full max-w-[720px] mx-auto rounded-lg border border-input bg-background p-4 text-lg focus:border-ring focus:outline-none"
               />
             )}
             {mode === "text" && text.length > MAX_TEXT && (
@@ -262,7 +257,7 @@ function Index() {
                 inputMode="url"
                 aria-label="Website link or crypto address"
                 placeholder="https://... or wallet address"
-                className="tap w-full rounded-xl border-2 border-input bg-background px-4 text-lg focus:border-ring focus:outline-none"
+                className="tap w-full rounded-lg border border-input bg-background px-4 text-lg focus:border-ring focus:outline-none"
               />
             )}
             {mode === "link" && isWallet && (
@@ -270,15 +265,15 @@ function Index() {
                 <legend className="text-base font-bold">{pcm ? "Dis one look like wallet address. Which network?" : "This looks like a wallet address. Which network?"}</legend>
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   {NETWORKS.map((n) => (
-                    <button
+                    <Button
                       key={n}
                       type="button"
                       aria-pressed={network === n}
                       onClick={() => setNetwork(n)}
-                      className={`tap rounded-xl border-2 text-base font-bold ${network === n ? "border-foreground bg-primary text-primary-foreground" : "border-input bg-secondary text-secondary-foreground"}`}
+                      className={`tap rounded-lg border text-base font-bold ${network === n ? "border-primary bg-primary text-primary-foreground" : "border-input bg-secondary text-secondary-foreground"}`}
                     >
                       {n}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </fieldset>
@@ -312,16 +307,16 @@ function Index() {
                 />
                 {image ? (
                   <div className="relative">
-                    <img src={image} alt="Your screenshot" className="max-h-80 w-full rounded-xl border-2 border-foreground bg-background object-contain" />
-                    <button onClick={() => setImage(null)} aria-label="Remove screenshot" className="absolute right-2 top-2 grid h-12 w-12 place-items-center rounded-full bg-foreground text-background">
+                    <img src={image} alt="Your screenshot" className="max-h-80 w-full rounded-lg border border-foreground bg-background object-contain" />
+                    <Button onClick={() => setImage(null)} aria-label="Remove screenshot" className="absolute right-2 top-2 grid h-12 w-12 place-items-center rounded-full bg-foreground text-background">
                       <X className="h-6 w-6" />
-                    </button>
+                    </Button>
                   </div>
                 ) : (
-                  <button onClick={() => fileRef.current?.click()} className="flex min-h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-foreground bg-background text-lg font-bold">
+                  <Button onClick={() => fileRef.current?.click()} className="flex min-h-40 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-foreground bg-background text-lg font-bold">
                     <Camera className="h-10 w-10" aria-hidden />
                     {pcm ? "Choose screenshot" : "Choose screenshot"}
-                  </button>
+                  </Button>
                 )}
               </div>
             )}
@@ -329,26 +324,26 @@ function Index() {
 
           <p className="mt-3 text-sm text-muted-foreground lg:hidden">{pcm ? "No share your PIN, password, OTP or full account number. We no go ever ask you." : "Never share your PIN, password, OTP or full account number. We will never ask for them."}</p>
 
-          <button
+          <Button
             onClick={onCheck}
             disabled={!ready || busy}
-            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-primary text-xl font-extrabold text-primary-foreground disabled:opacity-50"
+            className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-primary bg-primary text-xl font-extrabold text-primary-foreground disabled:opacity-50"
           >
             {busy ? (<><Loader2 className="h-6 w-6 animate-spin" /> {pcm ? "We dey check…" : "Checking…"}</>) : pcm ? "Check am" : "Check it"}
-          </button>
+          </Button>
         </div>
 
-        </div>
+        </section>
 
-        <div className="flex flex-wrap justify-center gap-2 md:grid md:grid-cols-3 lg:hidden">
+        <div className="hidden">
           {EXAMPLES.map((ex) => (
-            <button
+            <Button
               key={ex.label}
               onClick={() => { setMode("text"); setText(ex.text); setError(null); }}
               className="tap rounded-full border-2 border-foreground bg-secondary px-4 text-base font-bold text-secondary-foreground"
             >
               {ex.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -356,14 +351,14 @@ function Index() {
           <div role="alert" className="rounded-2xl border-2 border-careful bg-careful-soft p-4 text-lg">
             {error}
             {canRetry && (
-              <button
+              <Button
                 onClick={onCheck}
                 disabled={busy}
-                className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-foreground bg-primary text-lg font-extrabold text-primary-foreground disabled:opacity-50"
+                className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-primary bg-primary text-lg font-extrabold text-primary-foreground disabled:opacity-50"
               >
                 {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
                 {pcm ? "Try again" : "Try again"}
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -371,7 +366,7 @@ function Index() {
         <div ref={resultRef}>
           {result && <ResultCard result={result} onCheckAnother={onCheckAnother} />}
           {result && (
-            <details className="mt-3 rounded-2xl border-2 border-foreground bg-card p-4">
+            <details className="mt-3 rounded-lg border border-border bg-card p-4">
               <summary className="tap flex items-center text-base font-bold">Raw result (for testing)</summary>
               <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words text-xs">{JSON.stringify(result, null, 2)}</pre>
             </details>
@@ -383,8 +378,8 @@ function Index() {
 
         <TrendTiles />
 
-        <section id="how-it-works" aria-label="How it works" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6 2xl:p-8">
-          <h2 className="text-xl font-extrabold">{pcm ? "How e work" : "How it works"}</h2>
+        <section id="how-it-works" aria-label="How it works" className="border-y border-border py-8 md:py-10">
+          <h2 className="text-2xl font-bold text-primary">{pcm ? "How e work" : "How it works"}</h2>
           <div className="mt-3 grid grid-cols-3 gap-3 md:gap-6">
             {STEPS.map(({ Icon, title, pcmTitle, body, pcmBody }) => (
               <div key={title} className="text-center">
@@ -399,11 +394,11 @@ function Index() {
         </section>
 
         <section id="common-scams" aria-label="Common scams in Nigeria">
-          <h2 className="text-xl font-extrabold">{pcm ? "Common scams for Nigeria" : "Common scams in Nigeria"}</h2>
+          <h2 className="text-2xl font-bold text-primary">{pcm ? "Common scams for Nigeria" : "Common scams in Nigeria"}</h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {COMMON_SCAMS.map((s) => (
-              <article key={s.title} className="rounded-2xl border-2 border-foreground bg-card p-4">
-                <h3 className="text-lg font-extrabold">{pcm ? s.pcmTitle : s.title}</h3>
+              <article key={s.title} className="rounded-lg border border-border bg-card p-5">
+                <h3 className="text-lg font-bold text-primary">{pcm ? s.pcmTitle : s.title}</h3>
                 <p className="mt-2 text-base leading-snug">{pcm ? s.pcmWorks : s.works}</p>
                 <p className="mt-2 border-l-4 border-primary pl-2 text-base font-semibold leading-snug text-muted-foreground">{pcm ? s.pcmSpot : s.spot}</p>
               </article>

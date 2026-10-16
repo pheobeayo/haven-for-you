@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Loader2, LogIn, UserPlus } from "lucide-react";
+import { ArrowUpRight, Loader2, LogIn, ShieldCheck, UserPlus } from "lucide-react";
+import { WelcomeHero } from "@/components/WelcomeHero";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,8 +85,23 @@ function AuthPage() {
   const input = "tap w-full rounded-lg border-2 border-input bg-card px-4 text-lg focus:border-ring focus:outline-none";
   return <div className="min-h-screen pb-12">
     <AppHeader />
-    <main className="container-app max-w-md space-y-5 pt-6">
-      <img src="/icon-512.png" alt="" className="h-20 w-20" />
+    <WelcomeHero account onStart={() => document.getElementById("your-account")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+    <main id="your-account" className="container-app grid scroll-mt-6 gap-8 py-12 lg:grid-cols-2 lg:gap-20 lg:py-16">
+      <div className="pt-2">
+        <p className="mb-3 text-sm font-bold text-primary">{t("A LITTLE PAUSE. A SMARTER CHOICE.", "PAUSE SMALL. CHOOSE WISE.")}</p>
+        <h2 className="max-w-md text-3xl font-bold leading-tight text-primary">{t("Your hustle deserves protecting.", "Your hustle deserve protection.")}</h2>
+        <p className="mt-4 max-w-md text-lg text-muted-foreground">{t("For your shop, your family, and the money you worked hard for.", "For your shop, your family and di money wey you work hard for.")}</p>
+        <div className="mt-7 divide-y divide-border">
+          {[
+            [t("Check the message", "Check di message"), t("Bank alerts, job offers and suspicious links.", "Bank alerts, job offers and strange links.")],
+            [t("Understand the warning signs", "Understand di warning signs"), t("Clear answers in English or Pidgin.", "Clear answer for English or Pidgin.")],
+            [t("Take your next step with care", "Take your next step with care"), t("Simple advice. The final decision is yours.", "Simple advice. Na you get final say.")],
+          ].map(([title, body], i) => <div key={title} className="flex gap-4 py-5"><span className="pt-1 text-sm font-bold text-careful">0{i + 1}</span><div><h3 className="text-lg font-bold text-primary">{title}</h3><p className="mt-1 text-muted-foreground">{body}</p></div><ArrowUpRight className="ml-auto shrink-0 text-primary" size={20} aria-hidden /></div>)}
+        </div>
+        <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck size={18} aria-hidden />{t("Always confirm payments in your bank app.", "Always confirm payment for your bank app.")}</p>
+      </div>
+      <div className="account-panel space-y-5 rounded-lg border border-border bg-card p-5 sm:p-8">
+      <p className="text-sm font-bold text-careful">{t("WELCOME TO SHINE YOUR EYE", "WELCOME TO SHINE YOUR EYE")}</p>
       <h1 className="text-3xl font-extrabold text-primary">{confirmed ? t("Check your email", "Check your email") : signup ? t("Create account", "Open account") : t("Sign in", "Enter your account")}</h1>
       {confirmed ? <>
         <p className="text-lg">{t("Open the confirmation link in your email, then sign in to start checking.", "Open di confirmation link for your email, then enter your account to start checking.")}</p>
@@ -106,6 +122,7 @@ function AuthPage() {
         </form>
       </>}
       {msg && <p role="alert" className="rounded-lg bg-muted p-3 text-base">{msg}</p>}
+      </div>
     </main>
   </div>;
 }
