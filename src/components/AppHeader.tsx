@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { useLang } from "@/lib/lang";
 import logoAsset from "@/assets/logo-horizontal.png.asset.json";
+import { Button } from "@/components/ui/button";
 
 export function AppHeader() {
   const { user } = useAuth();
@@ -14,21 +15,21 @@ export function AppHeader() {
       <div className="flex items-center gap-2">
         <div role="group" aria-label="Language" className="flex overflow-hidden rounded-full border-2 border-foreground">
           {(["en", "pcm"] as const).map((l) => (
-            <button
+            <Button variant="ghost"
               key={l}
               onClick={() => setLang(l)}
               aria-pressed={lang === l}
               className={`flex min-h-12 items-center px-3 text-sm font-bold ${lang === l ? "bg-foreground text-background" : "bg-card"}`}
             >
               {l === "en" ? "English" : "Pidgin"}
-            </button>
+            </Button>
           ))}
         </div>
         <Link
           to={user ? "/history" : "/auth"}
           className="flex min-h-12 shrink-0 items-center rounded-full border-2 border-foreground px-4 text-base font-bold"
         >
-          {user ? "My checks" : "Sign in"}
+          {user ? "My checks" : lang === "pcm" ? "Enter account" : "Sign in"}
         </Link>
       </div>
     </header>
