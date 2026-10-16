@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { useServerFn } from "@tanstack/react-start";
 import { Camera, Link2, Loader2, MessageSquareText, SearchCheck, ShieldCheck, X } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
@@ -127,6 +128,16 @@ function Index() {
   const busyRef = useRef(false);
   const [canRetry, setCanRetry] = useState(false);
 
+  // Web Share Target: Android "Share → Shine Your Eye" opens /?text=…
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const shared = [q.get("title"), q.get("text"), q.get("url")].filter((s) => s && s.trim()).join("\n").trim();
+    if (!shared) return;
+    setMode("text");
+    setText(shared.slice(0, MAX_TEXT));
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
   async function onCheck() {
     if (busyRef.current) return;
     setCanRetry(false);
@@ -188,6 +199,7 @@ function Index() {
   return (
     <div className="min-h-screen pb-12">
       <AppHeader />
+      <InstallPrompt />
       <main className="container-app space-y-5 md:space-y-8 2xl:space-y-12">
         <div className="grid gap-5 lg:min-h-[80vh] lg:grid-cols-2 lg:items-center lg:gap-12 2xl:gap-16">
         <div className="min-w-0 text-center lg:text-left">
