@@ -228,7 +228,7 @@ function Index() {
     <div className="min-h-screen pb-12">
       <AppHeader />
       <InstallPrompt />
-      <AuthSheet open={authOpen} onOpenChange={(o) => { setAuthOpen(o); if (!o) pendingCheck.current = false; }} onBeforeRedirect={() => { try { if (mode !== "image") { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); sessionStorage.setItem("sye-autorun", "1"); } } catch { /* storage unavailable */ } }} />
+      <AuthSheet open={authOpen} onOpenChange={(o) => { setAuthOpen(o); if (!o) pendingCheck.current = false; }} onBeforeRedirect={() => { try { if (mode !== "photo") { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); sessionStorage.setItem("sye-autorun", "1"); } } catch { /* storage unavailable */ } }} />
 
       <WelcomeHero gate={!loading && !user} onStart={() => document.getElementById("check-message")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
       <main className="container-app space-y-10 py-10 md:space-y-14">
