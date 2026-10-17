@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { WelcomeHero } from "@/components/WelcomeHero";
+import { AuthSheet } from "@/components/AuthSheet";
 import { Button } from "@/components/ui/button";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { useServerFn } from "@tanstack/react-start";
@@ -146,14 +147,25 @@ function Index() {
     try {
       const draft = sessionStorage.getItem("sye-draft");
       if (draft) { setMode("text"); setText(draft.slice(0, MAX_TEXT)); sessionStorage.removeItem("sye-draft"); }
+      if (sessionStorage.getItem("sye-autorun") === "1") { sessionStorage.removeItem("sye-autorun"); if (draft) pendingCheck.current = true; }
     } catch { /* storage unavailable */ }
   }, []);
+
+  const [authOpen, setAuthOpen] = useState(false);
+  const pendingCheck = useRef(false);
+  useEffect(() => {
+    if (user && pendingCheck.current) {
+      pendingCheck.current = false;
+      setAuthOpen(false);
+      void onCheck();
+    }
+  });
 
   async function onCheck() {
     if (busyRef.current) return;
     if (!loading && !user) {
-      try { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); } catch { /* storage unavailable */ }
-      document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      pendingCheck.current = true;
+      setAuthOpen(true);
       return;
     }
     setCanRetry(false);
@@ -216,6 +228,8 @@ function Index() {
     <div className="min-h-screen pb-12">
       <AppHeader />
       <InstallPrompt />
+      <AuthSheet open={authOpen} onOpenChange={(o) => { setAuthOpen(o); if (!o) pendingCheck.current = false; }} onBeforeRedirect={() => { try { if (mode !== "photo") { sessionStorage.setItem("sye-draft", mode === "text" ? text : link); sessionStorage.setItem("sye-autorun", "1"); } } catch { /* storage unavailable */ } }} />
+
       <WelcomeHero gate={!loading && !user} onStart={() => document.getElementById("check-message")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
       <main className="container-app space-y-10 py-10 md:space-y-14">
         <section id="check-message" className="grid scroll-mt-6 gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-12">

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AuthSheet } from "@/components/AuthSheet";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Search } from "lucide-react";
@@ -29,11 +30,17 @@ export function CheckNumber() {
   const [busy, setBusy] = useState(false);
   const [out, setOut] = useState<Out | null>(null);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const [authOpen, setAuthOpen] = useState(false);
+  const pending = useRef(false);
+  useEffect(() => {
+    if (user && pending.current) { pending.current = false; setAuthOpen(false); void run(); }
+  });
+  const onSubmit = (e: React.FormEvent) => { e.preventDefault(); void run(); };
+  const run = async () => {
     if (busy || !value.trim()) return;
     if (!loading && !user) {
-      document.getElementById("welcome")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      pending.current = true;
+      setAuthOpen(true);
       return;
     }
     setBusy(true);
@@ -51,6 +58,7 @@ export function CheckNumber() {
 
   return (
     <section id="check-a-number" aria-label="Check a number, account or link" className="rounded-2xl border-2 border-foreground bg-card p-4 md:p-6">
+      <AuthSheet open={authOpen} onOpenChange={(o) => { setAuthOpen(o); if (!o) pending.current = false; }} />
       <h2 className="text-xl font-extrabold">{pcm ? "Check number, account or link" : "Check a number, account or link"}</h2>
       <form onSubmit={onSubmit} className="mt-3 flex flex-col gap-2 sm:flex-row">
         <input
