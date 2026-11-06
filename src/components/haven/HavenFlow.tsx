@@ -128,22 +128,30 @@ export function HavenFlow() {
       <>
         <section
           id="start"
-          className="on-indigo grid scroll-mt-28 bg-primary text-primary-foreground lg:grid-cols-[minmax(0,1fr)_22rem]"
+          className="on-indigo grid scroll-mt-16 bg-primary text-primary-foreground lg:grid-cols-[minmax(0,1fr)_22rem]"
         >
-          <div className="adire h-14 lg:hidden" aria-hidden />
+          <div className="adire h-6 sm:h-14 lg:hidden" aria-hidden />
           <AdirePanel />
-          <div className="hero-copy w-full py-8 lg:py-14">
-            <h1 className="text-4xl font-extrabold leading-[1.1] md:text-5xl">
+          <div className="hero-copy w-full py-5 sm:py-8 lg:py-14">
+            <h1 className="text-3xl font-extrabold leading-[1.1] sm:text-4xl md:text-5xl">
               {pcm
                 ? "Wetin dey worry you about dis pikin?"
                 : "What is worrying you about this child?"}
             </h1>
-            <p className="mt-4 max-w-prose text-lg leading-relaxed">
+            <p className="mt-3 max-w-prose text-lg leading-snug">
               {pcm
                 ? "Haven dey help adults for Nigeria know wetin to do next. You no need account."
                 : "Haven helps adults in Nigeria take the safest next step. No account needed."}
             </p>
-            <label htmlFor="concern" className="mt-6 block font-bold">
+            <button
+              type="button"
+              onClick={() => setView({ name: "emergency", kind: "danger", category: null })}
+              className="danger-top tap mt-3 w-full items-center justify-center gap-2 rounded-md border-2 border-white bg-urgent px-5 text-lg font-extrabold text-white"
+            >
+              <Siren className="h-5 w-5" aria-hidden />
+              {pcm ? "Pikin dey for danger now" : "A child is in danger now"}
+            </button>
+            <label htmlFor="concern" className="mt-4 block font-bold sm:mt-6">
               {pcm ? "Wetin you notice?" : "What did you notice?"}
             </label>
             <textarea
@@ -153,7 +161,7 @@ export function HavenFlow() {
               onChange={(e) => setText(e.target.value)}
               onDrop={blockFiles}
               onDragOver={blockFiles}
-              rows={4}
+              rows={3}
               className="mt-2 block w-full rounded-md border-2 border-transparent bg-card p-3 text-lg text-foreground focus:outline-none focus-visible:border-accent"
             />
             <p className="mt-2 leading-snug">
@@ -161,7 +169,7 @@ export function HavenFlow() {
                 ? "No write anybody name, address or phone number. No need for picture."
                 : "Do not write anyone's name, address or phone number. Pictures are not accepted."}
             </p>
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3 lg:flex-col xl:flex-row">
               <button
                 type="button"
                 onClick={onSubmit}
@@ -180,7 +188,7 @@ export function HavenFlow() {
               <button
                 type="button"
                 onClick={() => setView({ name: "emergency", kind: "danger", category: null })}
-                className="tap inline-flex flex-1 items-center justify-center gap-2 rounded-md border-2 border-white bg-urgent px-5 text-lg font-extrabold text-white"
+                className="danger-row tap flex-1 items-center justify-center gap-2 rounded-md border-2 border-white bg-urgent px-5 text-lg font-extrabold text-white"
               >
                 <Siren className="h-5 w-5" aria-hidden />
                 {pcm ? "Pikin dey for danger now" : "A child is in danger now"}

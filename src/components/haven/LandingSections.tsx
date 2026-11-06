@@ -148,7 +148,7 @@ export function LandingSections() {
         </div>
       </section>
 
-      <section id="how-it-works" className="scroll-mt-28 py-12 md:py-16">
+      <section id="how-it-works" className="scroll-mt-16 py-12 md:py-16">
         <div className="container-app">
           <h2 className="text-3xl font-extrabold text-primary md:text-4xl">
             {t("From worry to next step", "From worry reach next step")}
@@ -189,7 +189,7 @@ export function LandingSections() {
 
       <section
         id="safety"
-        className="on-indigo scroll-mt-28 bg-primary py-12 text-primary-foreground md:py-16"
+        className="on-indigo scroll-mt-16 bg-primary py-12 text-primary-foreground md:py-16"
       >
         <div className="container-app">
           <h2 className="max-w-3xl text-3xl font-extrabold leading-tight md:text-4xl">
