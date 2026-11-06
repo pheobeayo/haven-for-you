@@ -55,10 +55,16 @@ function ContactRow({ contact }: { contact: Contact }) {
   );
 }
 
-export function ContactList({ topics }: { topics: ContactTopic[] }) {
+export function ContactList({
+  topics,
+  initialPlace = "nationwide",
+}: {
+  topics: ContactTopic[];
+  initialPlace?: Coverage;
+}) {
   const { lang } = useLang();
   const pcm = lang === "pcm";
-  const [place, setPlace] = useState<Coverage>("nationwide");
+  const [place, setPlace] = useState<Coverage>(initialPlace);
   const contacts = contactsFor(topics, place);
   return (
     <div>

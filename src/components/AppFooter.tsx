@@ -1,39 +1,63 @@
 import { Link } from "@tanstack/react-router";
 import { HavenMark } from "@/components/HavenMark";
-import { useLang } from "@/lib/lang";
+import { useT } from "@/lib/lang";
+import { COMPANY_NAME } from "@/lib/site";
 
 export function AppFooter() {
-  const pcm = useLang().lang === "pcm";
+  const t = useT();
   const linkClass =
     "flex min-h-11 items-center underline underline-offset-4 hover:text-accent focus-visible:outline-accent";
+  const heading = "mb-1 font-extrabold text-accent";
   return (
     <footer className="on-indigo bg-footer text-footer-foreground">
-      <div className="container-app grid gap-6 py-8 md:grid-cols-[1.4fr_1fr]">
+      <div className="container-app grid gap-8 py-8 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div>
           <HavenMark />
-          <p className="mt-3 max-w-md leading-relaxed">
-            {pcm
-              ? "Help for adults wey dey worry about pikin. Haven no be police, doctor or child protection service."
-              : "Help for adults who are worried about a child. Haven is not the police, a doctor or a child protection service."}
+          <p className="mt-3 max-w-sm leading-relaxed">
+            {t(
+              "Help for adults who are worried about a child. Haven is not the police, a doctor or a child protection service.",
+              "Help for adults wey dey worry about pikin. Haven no be police, doctor or child protection service.",
+            )}
           </p>
         </div>
-        <nav aria-label={pcm ? "Pages" : "Pages"}>
+        <nav aria-label={t("Get help", "Find help")}>
+          <p className={heading}>{t("Get help", "Find help")}</p>
+          <Link to="/" hash="start" className={linkClass}>
+            {t("Start here", "Start here")}
+          </Link>
           <Link to="/contacts" className={linkClass}>
-            {pcm ? "Who fit help" : "Who can help"}
+            {t("Who can help", "Who fit help")}
           </Link>
+        </nav>
+        <nav aria-label="Haven">
+          <p className={heading}>Haven</p>
           <Link to="/about" className={linkClass}>
-            {pcm ? "About Haven" : "About Haven"}
+            {t("About", "About")}
           </Link>
+          <Link to="/safety" className={linkClass}>
+            {t("Safety", "Safety")}
+          </Link>
+          <Link to="/organisations" className={linkClass}>
+            {t("For organisations", "For organisations")}
+          </Link>
+          <Link to="/contact" className={linkClass}>
+            {t("Contact us", "Contact us")}
+          </Link>
+        </nav>
+        <nav aria-label={t("Legal", "Legal")}>
+          <p className={heading}>{t("Legal", "Legal")}</p>
           <Link to="/privacy" className={linkClass}>
-            {pcm ? "Your privacy" : "Your privacy"}
+            {t("Privacy", "Privacy")}
+          </Link>
+          <Link to="/terms" className={linkClass}>
+            {t("Terms of use", "Terms of use")}
           </Link>
         </nav>
       </div>
       <div className="border-t border-footer-divider">
         <p className="container-app py-4 text-sm">
-          {pcm
-            ? "If pikin dey for danger now, call 112."
-            : "If a child is in danger now, call 112."}
+          {t("If a child is in danger now, call 112.", "If pikin dey for danger now, call 112.")} ©
+          2026 {COMPANY_NAME}
         </p>
       </div>
     </footer>
