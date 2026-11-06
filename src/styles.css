@@ -151,3 +151,24 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128' fill='none' stroke='%233d4792' stroke-width='3'%3E%3Cpath d='M0 64h128M64 0v128' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='20'/%3E%3Ccircle cx='32' cy='32' r='11'/%3E%3Ccircle cx='32' cy='32' r='3' fill='%233d4792'/%3E%3Cpath d='M72 12h48M72 24h48M72 36h48M72 48h48' stroke-dasharray='6 5'/%3E%3Cpath d='M8 84l12-12 12 12 12-12 12 12M8 100l12-12 12 12 12-12 12 12M8 116l12-12 12 12 12-12 12 12'/%3E%3Cpath d='M96 72l24 24-24 24-24-24z'/%3E%3Cpath d='M96 84l12 12-12 12-12-12z'/%3E%3C/svg%3E");
   background-size: 128px 128px;
 }
+
+/* The one moment of motion: the cloth's pattern is drawn in once on arrival. */
+.adire-draw path,
+.adire-draw circle {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: adire-draw 1.6s ease-out forwards;
+  animation-delay: var(--delay, 0ms);
+}
+@keyframes adire-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adire-draw path,
+  .adire-draw circle {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

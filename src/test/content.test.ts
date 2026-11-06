@@ -62,6 +62,19 @@ describe("contacts", () => {
   });
 });
 
+describe("accounts stay separate from concerns", () => {
+  it("does not use sign-in in the concern flow", () => {
+    for (const file of [
+      "src/components/haven/HavenFlow.tsx",
+      "src/lib/route-concern.functions.ts",
+      "src/lib/route-concern.server.ts",
+      "src/lib/triage.ts",
+    ]) {
+      expect(readFileSync(file, "utf8"), file).not.toMatch(/use-auth|supabase/i);
+    }
+  });
+});
+
 describe("no images, ever", () => {
   const files: string[] = [];
   const walk = (dir: string) => {

@@ -8,7 +8,7 @@ export const Route = createFileRoute("/privacy")({
       { title: "Your privacy: Haven" },
       {
         name: "description",
-        content: "Haven needs no account, takes no pictures and does not save what you write.",
+        content: "Haven takes no pictures and does not save what you write. Accounts are optional.",
       },
     ],
   }),
@@ -26,8 +26,8 @@ function Privacy() {
         </h2>
         <p className="mt-2">
           {pcm
-            ? "Haven no get account and e no get database for wetin you write. When you refresh or press Start again, e go clear from di page."
-            : "Haven has no accounts and no database of what you write. Refreshing the page or pressing Start again clears it from the page."}
+            ? "Haven no get database for wetin you write. When you refresh or press Start again, e go clear from di page."
+            : "Haven has no database of what you write. Refreshing the page or pressing Start again clears it from the page."}
         </p>
       </section>
       <section>

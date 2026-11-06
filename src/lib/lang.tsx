@@ -35,3 +35,9 @@ export function LangProvider({ children }: { children: ReactNode }) {
 export function useLang() {
   return useContext(LangCtx);
 }
+
+/** Picks the English or Pidgin wording for the current language. */
+export function useT() {
+  const { lang } = useLang();
+  return (en: string, pcm: string) => (lang === "pcm" ? pcm : en);
+}

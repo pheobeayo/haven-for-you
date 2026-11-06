@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, type DragEvent } from "react";
+import { useLocation } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ChevronRight, Loader2, Siren } from "lucide-react";
+import { AdirePanel } from "@/components/haven/AdirePanel";
 import { GuidanceView } from "@/components/haven/GuidanceView";
+import { LandingSections } from "@/components/haven/LandingSections";
 import {
   CATEGORIES,
   EMERGENCIES,
@@ -45,6 +48,12 @@ export function HavenFlow() {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const stepRef = useRef<HTMLDivElement>(null);
+  const hash = useLocation({ select: (location) => location.hash });
+
+  // A link to a home page section leaves the flow but keeps the typed text.
+  useEffect(() => {
+    if (hash) setView({ name: "start" });
+  }, [hash]);
 
   useEffect(() => {
     if (view.name === "start") return;
@@ -116,8 +125,12 @@ export function HavenFlow() {
   if (view.name === "start") {
     return (
       <>
-        <section className="on-indigo grid bg-primary text-primary-foreground lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <div className="adire h-14 lg:order-2 lg:h-auto" aria-hidden />
+        <section
+          id="start"
+          className="on-indigo grid scroll-mt-28 bg-primary text-primary-foreground lg:grid-cols-[minmax(0,1fr)_22rem]"
+        >
+          <div className="adire h-14 lg:hidden" aria-hidden />
+          <AdirePanel />
           <div className="hero-copy w-full py-8 lg:py-14">
             <h1 className="text-4xl font-extrabold leading-[1.1] md:text-5xl">
               {pcm
@@ -126,8 +139,8 @@ export function HavenFlow() {
             </h1>
             <p className="mt-4 max-w-prose text-lg leading-relaxed">
               {pcm
-                ? "Talk wetin you notice. Haven go help you find di next step."
-                : "Say what you noticed. Haven will help you find the next step."}
+                ? "Haven dey help adults for Nigeria know wetin to do next. You no need account."
+                : "Haven helps adults in Nigeria take the safest next step. No account needed."}
             </p>
             <label htmlFor="concern" className="mt-6 block font-bold">
               {pcm ? "Wetin you notice?" : "What did you notice?"}
@@ -208,16 +221,9 @@ export function HavenFlow() {
                 </li>
               ))}
             </ul>
-            <h2 className="mt-10 text-2xl font-extrabold text-primary">
-              {pcm ? "How Haven dey protect your privacy" : "How Haven protects your privacy"}
-            </h2>
-            <p className="mt-3 max-w-prose text-lg leading-relaxed">
-              {pcm
-                ? "You no need account. Haven no dey collect picture or pikin name, and e no dey save wetin you write. Press Comot now to leave anytime."
-                : "You do not need an account. Haven never takes pictures or a child's name, and it does not save what you write. Press Leave now to go at any time."}
-            </p>
           </div>
         </main>
+        <LandingSections />
       </>
     );
   }

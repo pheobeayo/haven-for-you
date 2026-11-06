@@ -10,7 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Rules
-- Haven is for adults worried about a child. Keep the app usable with no account, on a 360px phone and on slow data.
+- Haven is for adults worried about a child. Keep getting help possible with no account, on a 360px phone and on slow data.
+- Accounts are optional, for frontline workers, and for adults only. Never link a concern to an account or require sign-in to reach guidance.
 - All safety advice lives in `src/content/guidance.ts`. AI may only pick labels. Never show text written by a model.
 - Rules in `src/lib/triage.ts` must work with no AI. AI may raise a concern to an emergency, but never clear one the rules found.
 - Never add image, file or camera input. `src/test/content.test.ts` enforces this.
