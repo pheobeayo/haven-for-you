@@ -20,11 +20,13 @@ Return JSON only, exactly this shape:
 
 const AI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 const DEFAULT_MODEL = "gemini-3.8-flash";
-const AI_TIMEOUT_MS = 10_000;
+const AI_TIMEOUT_MS = 15_000;
 
 type Fetcher = typeof fetch;
 
-async function askModel(key: string, text: string, fetcher: Fetcher): Promise<string | null> {
+type ModelResult = { ok: true; content: string } | { ok: false; reason: string };
+
+async function askModel(key: string, text: string, fetcher: Fetcher): Promise<ModelResult> {
   const res = await fetcher(AI_URL, {
     method: "POST",
     signal: AbortSignal.timeout(AI_TIMEOUT_MS),
@@ -34,7 +36,6 @@ async function askModel(key: string, text: string, fetcher: Fetcher): Promise<st
     },
     body: JSON.stringify({
       model: process.env["GEMINI_MODEL"] || DEFAULT_MODEL,
-      stream: true,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM },
@@ -42,30 +43,19 @@ async function askModel(key: string, text: string, fetcher: Fetcher): Promise<st
       ],
     }),
   });
-  if (!res.ok || !res.body) return null;
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  let output = "";
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed.startsWith("data:")) continue;
-      const data = trimmed.slice(5).trim();
-      if (data === "[DONE]") continue;
-      try {
-        output += JSON.parse(data).choices?.[0]?.delta?.content ?? "";
-      } catch {
-        /* partial chunk */
-      }
-    }
-  }
-  return output;
+  if (!res.ok) return { ok: false, reason: `http_${res.status}` };
+  const body = (await res.json()) as { choices?: { message?: { content?: unknown } }[] };
+  const content = body.choices?.[0]?.message?.content;
+  if (typeof content !== "string") return { ok: false, reason: "empty_reply" };
+  return { ok: true, content };
+}
+
+/**
+ * Records why the AI step was skipped, so problems show in the server logs.
+ * It never includes the concern, the reply or the key.
+ */
+function reportAIFallback(reason: string) {
+  console.warn(`[haven-ai] fallback: ${reason}`);
 }
 
 /**
@@ -95,11 +85,27 @@ export async function routeConcernText(
 ): Promise<RoutedConcern> {
   const redacted = redactConcern(text);
   const rulesOnly = mergeRouting(redacted, null);
-  if (rulesOnly.emergency || !key || !takeAISlot()) return rulesOnly;
+  if (rulesOnly.emergency) return rulesOnly;
+  if (!key) {
+    reportAIFallback("no_key");
+    return rulesOnly;
+  }
+  if (!takeAISlot()) {
+    reportAIFallback("rate_cap");
+    return rulesOnly;
+  }
   try {
-    const raw = await askModel(key, redacted, fetcher);
-    return mergeRouting(redacted, raw ? parseAIRouting(raw) : null);
-  } catch {
+    const reply = await askModel(key, redacted, fetcher);
+    if (!reply.ok) {
+      reportAIFallback(reply.reason);
+      return rulesOnly;
+    }
+    const routing = parseAIRouting(reply.content);
+    if (!routing) reportAIFallback("unreadable_reply");
+    return mergeRouting(redacted, routing);
+  } catch (error) {
+    const timedOut = error instanceof Error && error.name === "TimeoutError";
+    reportAIFallback(timedOut ? "timeout" : "network_error");
     return rulesOnly;
   }
 }

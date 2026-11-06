@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { routeConcernText } from "@/lib/route-concern.server";
 
 function aiReply(content: string): typeof fetch {
-  const body = `data: ${JSON.stringify({ choices: [{ delta: { content } }] })}\n\ndata: [DONE]\n\n`;
+  const body = JSON.stringify({ choices: [{ message: { content } }] });
   return vi.fn(async () => new Response(body, { status: 200 })) as unknown as typeof fetch;
 }
 
@@ -58,13 +58,24 @@ describe("routeConcernText", () => {
     expect(String(init?.body)).not.toContain("08031234567");
   });
 
-  it("does not log the concern when something fails", async () => {
-    const log = vi.spyOn(console, "error");
-    const fails = vi.fn(async () => {
-      throw new Error("timeout");
-    }) as unknown as typeof fetch;
-    await routeConcernText(QUIET, "key", fails);
-    expect(log).not.toHaveBeenCalled();
-    log.mockRestore();
+  it("logs why AI was skipped, but never the concern", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const error = vi.spyOn(console, "error");
+    const rejected = vi.fn(
+      async () => new Response("bad key", { status: 401 }),
+    ) as unknown as typeof fetch;
+    await routeConcernText(QUIET, "key", rejected);
+    expect(warn).toHaveBeenCalledWith("[haven-ai] fallback: http_401");
+    expect(JSON.stringify(warn.mock.calls)).not.toContain("quiet");
+    expect(error).not.toHaveBeenCalled();
+    warn.mockRestore();
+    error.mockRestore();
+  });
+
+  it("reports a missing key", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    await routeConcernText(QUIET, undefined);
+    expect(warn).toHaveBeenCalledWith("[haven-ai] fallback: no_key");
+    warn.mockRestore();
   });
 });
