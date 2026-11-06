@@ -31,7 +31,7 @@ type View =
   | { name: "guidance"; category: CategoryId; urgency: Urgency }
   | { name: "emergency"; kind: EmergencyKind; category: CategoryId | null };
 
-const ROUTE_TIMEOUT_MS = 12_000;
+const ROUTE_TIMEOUT_MS = 18_000;
 
 function blockFiles(e: DragEvent) {
   if (e.dataTransfer?.types.includes("Files")) e.preventDefault();
