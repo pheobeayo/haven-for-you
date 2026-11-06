@@ -32,8 +32,8 @@ export function AppHeader() {
     </>
   );
   return (
-    <div className="sticky top-0 z-30">
-      <header className="border-b border-border bg-card">
+    <>
+      <header className="sticky top-0 z-30 border-b border-border bg-card">
         <div className="container-app flex items-center justify-between gap-1 py-2">
           <Link to="/" aria-label={t("Haven home", "Haven home")} className="shrink-0 text-primary">
             <HavenMark compact />
@@ -83,6 +83,6 @@ export function AppHeader() {
           )}
         </span>
       </p>
-    </div>
+    </>
   );
 }

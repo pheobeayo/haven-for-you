@@ -165,7 +165,7 @@ export function SideArt({ variant }: { variant: ArtVariant }) {
     <div
       aria-hidden
       data-art={variant}
-      className="sticky top-32 hidden h-[calc(100vh-10rem)] max-h-[40rem] min-h-96 overflow-hidden rounded-lg bg-primary lg:block"
+      className="sticky top-20 hidden h-[calc(100vh-7rem)] max-h-[40rem] min-h-96 overflow-hidden rounded-lg bg-primary lg:block"
     >
       <svg viewBox="0 0 400 640" preserveAspectRatio="xMidYMid slice" className="h-full w-full">
         <Art />

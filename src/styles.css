@@ -262,3 +262,19 @@ body {
     opacity: 0.6;
   }
 }
+
+/* On small or short screens the danger button moves up, so it is always in view. */
+.danger-top {
+  display: none;
+}
+.danger-row {
+  display: inline-flex;
+}
+@media (width < 640px), (height < 700px) {
+  .danger-top {
+    display: flex;
+  }
+  .danger-row {
+    display: none;
+  }
+}
