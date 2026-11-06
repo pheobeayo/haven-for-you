@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { ScanResult } from "@/lib/scan.functions";
+import { Square, Volume2 } from "lucide-react";
 import { useLang } from "@/lib/lang";
-
-const WORDS: Record<ScanResult["verdict"], string> = {
-  scam: "Likely scam",
-  suspicious: "Be careful",
-  safe: "Looks safe",
-};
 
 function supported() {
   return (
@@ -35,28 +29,7 @@ function pickVoice(): SpeechSynthesisVoice | null {
   }
 }
 
-/** What gets read out: verdict, scam type, top red flags, then the steps. */
-function linesFor(result: ScanResult): string[] {
-  const out: string[] = [
-    `My verdict: ${WORDS[result.verdict]}. Risk score ${result.risk_score} out of 100.`,
-    `Type of scam: ${result.scam_type}.`,
-  ];
-
-  const flags = result.red_flags.slice(0, 3);
-  if (flags.length) {
-    out.push("Red flags we found.");
-    flags.forEach((f, i) => out.push(`Number ${i + 1}. ${f.flag}. The message says: ${f.evidence}.`));
-  }
-
-  if (result.what_to_do.length) {
-    out.push("What to do now.");
-    result.what_to_do.forEach((s, i) => out.push(`Step ${i + 1}. ${s}.`));
-  }
-
-  return out;
-}
-
-export function ListenButton({ result }: { result: ScanResult }) {
+export function ListenButton({ lines }: { lines: string[] }) {
   const { lang } = useLang();
   const pcm = lang === "pcm";
   const [ok, setOk] = useState(false);
@@ -98,7 +71,7 @@ export function ListenButton({ result }: { result: ScanResult }) {
     };
   }, []);
 
-  // Stop talking when this result changes or the screen goes away.
+  // Stop talking when this guidance changes or the screen goes away.
   useEffect(() => {
     if (!ok) return;
     try {
@@ -109,7 +82,7 @@ export function ListenButton({ result }: { result: ScanResult }) {
     clearBeat();
     setPlaying(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result, ok]);
+  }, [lines.join("|"), ok]);
 
   useEffect(
     () => () => {
@@ -137,7 +110,6 @@ export function ListenButton({ result }: { result: ScanResult }) {
       return;
     }
 
-    const lines = linesFor(result);
     if (!lines.length) return;
 
     // Warm the voice list; some browsers fill it in a beat later.
@@ -192,9 +164,10 @@ export function ListenButton({ result }: { result: ScanResult }) {
       type="button"
       onClick={toggle}
       aria-pressed={playing}
-      className="tap mt-4 w-full rounded-xl border-2 border-verdict-foreground px-4 py-3 text-lg font-bold text-verdict-foreground"
+      className="tap inline-flex items-center gap-2 rounded-md border-2 border-primary px-4 font-bold text-primary"
     >
-      {playing ? (pcm ? "⏹ Stop am" : "⏹ Stop") : pcm ? "🔊 Make you hear" : "🔊 Listen"}
+      {playing ? <Square className="h-5 w-5" aria-hidden /> : <Volume2 className="h-5 w-5" aria-hidden />}
+      {playing ? (pcm ? "Stop am" : "Stop") : pcm ? "Hear am" : "Listen to this"}
     </button>
   );
 }

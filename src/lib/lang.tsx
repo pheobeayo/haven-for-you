@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 export type Lang = "en" | "pcm";
 
-const KEY = "sye-lang";
+const KEY = "haven-lang";
 
 const LangCtx = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
   lang: "en",

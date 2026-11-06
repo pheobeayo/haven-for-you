@@ -1,21 +1,16 @@
 {
   "id": "/",
-  "name": "Shine Your Eye",
-  "short_name": "Shine Your Eye",
-  "description": "Check before you pay or send goods.",
+  "name": "Haven",
+  "short_name": "Haven",
+  "description": "Help for adults who are worried about a child.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0E4D3A",
+  "background_color": "#f3f4fb",
+  "theme_color": "#232c6b",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ],
-  "share_target": {
-    "action": "/",
-    "method": "GET",
-    "params": { "title": "title", "text": "text", "url": "url" }
-  }
+  ]
 }

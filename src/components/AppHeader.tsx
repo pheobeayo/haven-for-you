@@ -1,37 +1,59 @@
 import { Link } from "@tanstack/react-router";
-import { useAuth } from "@/hooks/use-auth";
+import { X } from "lucide-react";
+import { HavenMark } from "@/components/HavenMark";
 import { useLang } from "@/lib/lang";
-import logoAsset from "@/assets/logo-horizontal.png.asset.json";
-import { Button } from "@/components/ui/button";
+
+/** Leaves at once and replaces this page in the tab's back history. */
+function leaveNow() {
+  window.location.replace("https://www.google.com/search?q=weather+today");
+}
 
 export function AppHeader() {
-  const { user } = useAuth();
   const { lang, setLang } = useLang();
+  const pcm = lang === "pcm";
   return (
-    <header className="container-app flex flex-wrap items-center justify-between gap-3 py-4 2xl:py-6">
-      <Link to="/" aria-label="Shine Your Eye — home" className="flex items-center">
-        <img src={logoAsset.url} alt="Shine Your Eye" className="h-9 w-auto md:h-11" />
-      </Link>
-      <div className="flex items-center gap-2">
-        <div role="group" aria-label="Language" className="flex overflow-hidden rounded-full border-2 border-foreground">
-          {(["en", "pcm"] as const).map((l) => (
-            <Button variant="ghost"
-              key={l}
-              onClick={() => setLang(l)}
-              aria-pressed={lang === l}
-              className={`flex min-h-12 items-center px-3 text-sm font-bold ${lang === l ? "bg-foreground text-background" : "bg-card"}`}
+    <div className="sticky top-0 z-30">
+      <header className="border-b border-border bg-card">
+        <div className="container-app flex items-center justify-between gap-1 py-2">
+          <Link
+            to="/"
+            aria-label={pcm ? "Haven home" : "Haven home"}
+            className="shrink-0 text-primary"
+          >
+            <HavenMark compact />
+          </Link>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <div role="group" aria-label={pcm ? "Language" : "Language"} className="flex">
+              {(["en", "pcm"] as const).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => setLang(l)}
+                  aria-pressed={lang === l}
+                  className={`min-h-11 px-1.5 text-sm font-bold underline-offset-4 sm:px-2 ${lang === l ? "text-primary underline decoration-2" : "text-muted-foreground"}`}
+                >
+                  {l === "en" ? "English" : "Pidgin"}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={leaveNow}
+              className="inline-flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-primary px-2.5 text-sm font-bold text-primary-foreground"
             >
-              {l === "en" ? "English" : "Pidgin"}
-            </Button>
-          ))}
+              <X className="hidden h-4 w-4 sm:block" aria-hidden />
+              {pcm ? "Comot now" : "Leave now"}
+            </button>
+          </div>
         </div>
-        <Link
-          to={user ? "/history" : "/auth"}
-          className="flex min-h-12 shrink-0 items-center rounded-full border-2 border-foreground px-4 text-base font-bold"
-        >
-          {user ? "My checks" : lang === "pcm" ? "Enter account" : "Sign in"}
-        </Link>
-      </div>
-    </header>
+      </header>
+      <p className="bg-secondary py-1.5 text-foreground">
+        <span className="container-app block text-sm font-bold leading-snug">
+          {pcm
+            ? "Test version. Professionals never review dis guidance. No use am for real case."
+            : "Test version. This guidance is pending professional review. Not for real-world use."}
+        </span>
+      </p>
+    </div>
   );
 }

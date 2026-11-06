@@ -1,9 +1,13 @@
-# Tasks
-- [x] Refresh the welcome and signed-in home pages without changing account access or checking.
-- [x] Verify English/Pidgin, account actions, and phone/desktop presentation.
-- [x] Require authenticated access to app pages and scan/report/trends actions.
-- [x] Add profile display name and English/Pidgin auth flows.
-- [x] Verify signed-out redirects and signed-in checking/history.
-- [x] Add branded shared footer with eight rotating tips and working links.
-- [x] Add Been scammed, About and Privacy pages in English and Pidgin.
-- [x] Verify navigation and desktop/mobile layout without changing scanning.
+# Roadmap
+
+## Before any real use
+- [ ] Child protection professional reviews all guidance and the emergency rules.
+- [ ] Native speakers check all Pidgin.
+- [ ] Call every contact and record `confirmedOn`.
+- [ ] Remove the review notice only after sign-off.
+
+## Next
+- [ ] Yoruba and Hausa, written and reviewed by people.
+- [ ] Voice input, once it works reliably in low-bandwidth settings.
+- [ ] Referral directory for more states.
+- [ ] "This is happening to me" mode for adults. Add a route for older girls only after expert review.

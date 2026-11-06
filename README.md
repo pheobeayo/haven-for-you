@@ -1,55 +1,42 @@
-# Shine Your Eye
+# Haven
 
-PRODUCT: Shine Your Eye — an AI scam checker for Nigerians.
-Users paste text, upload a screenshot, or enter a link/crypto address and get a verdict before they send money or goods.
+Haven helps adults in Nigeria respond safely when they are worried about a child. Mothers, caregivers, teachers, youth leaders and community health workers say what they noticed, in text or by choosing from a list. Haven asks a few scripted questions, shows how urgent the situation is, and gives approved next steps and people who can help.
 
-PRIMARY USERS: market traders, shop owners and POS agents checking bank credit alerts; their parents and grandparents on WhatsApp. Many are not tech-savvy and use cheap Android phones on slow data.
+A child does not need a phone or internet access for Haven to help them.
 
-DESIGN RULES
-- Mobile first (360px wide), large tap targets, high contrast, minimal text per screen.
-- Plain English, short sentences. Optional Nigerian Pidgin for all results.
-- Verdict colours: red = Likely scam, amber = Be careful, green = Looks safe. Always show the word, never colour alone.
-- Friendly, calm tone. Never shame the user.
+> **Status: test version.** The guidance is seeded from published sources and is pending review by a child protection professional. Do not use it for a real case. See [docs/content-review.md](docs/content-review.md).
 
-TECH RULES
-- Use Lovable Cloud for database, auth, storage and edge functions.
-- All AI calls go through an edge function using Lovable AI. Never call AI or expose keys from the browser.
-- Default model: Gemini 3 Flash (supports images).
-- The AI must return JSON only, in this shape:
-  { "verdict": "scam" | "suspicious" | "safe",
-    "risk_score": 0-100,
-    "scam_type": string,
-    "red_flags": [ { "flag": string, "evidence": string } ],
-    "what_to_do": [string],
-    "explanation_en": string,
-    "explanation_pcm": string }
-- Validate the JSON in the edge function; if it fails, retry once, then show a friendly error.
-- Handle 429 (too many requests) and 402 (AI balance empty) with clear messages.
+## How it stays safe
 
-SAFETY RULES
-- Never ask users for PINs, passwords, OTPs or full account numbers.
-- Every result shows: "This is an AI opinion, not a guarantee. When in doubt, confirm with your bank app directly."
-- Scanning works without sign-up. Sign-in is only needed to save history.
+- **AI routes. People's words speak.** The model can only return fixed labels for category and emergency. Any other output is discarded, and it never writes advice.
+- **Works without AI.** Rules in `src/lib/triage.ts` and the scripted questions run on their own. If AI fails, is slow or hits its spending cap, people still reach the guidance.
+- **Emergencies can't be downgraded.** AI can raise a concern to an emergency, but it can't clear one the rules found. When the rules find an emergency, Haven shows it at once and sends nothing to AI.
+- **No images, ever.** There is no upload path in the app, and a test fails if one is added.
+- **Nothing kept.** There are no accounts, no database of concerns and no logging of what people write. Phone numbers and email addresses are removed before text goes to the AI service.
+- **Private to use.** The journey stays on one address and in memory. Leave now exits at once and replaces the page in that tab's history.
 
-This project was built with [Lovable](https://lovable.dev).
+## Where things live
 
-**Live app**: https://shine-your-eye.lovable.app
+| Path | What it holds |
+| --- | --- |
+| `src/content/guidance.ts` | Questions and the response library, in English and Pidgin |
+| `src/content/contacts.ts` | Referral directory, with the source of each contact and the date it was confirmed |
+| `src/lib/triage.ts` | Emergency rules, category rules and validation of AI output |
+| `src/lib/route-concern.server.ts` | The AI routing call and its spending cap |
+| `src/components/haven/` | The intake, question, guidance and contact screens |
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/459a7b0b-6e5b-4e1e-9cfa-f473e0a0b5d8).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Run it
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+bun run dev
+bun run test
 ```
+
+AI routing needs `LOVABLE_API_KEY` on the server. Without it, Haven uses the rules.
+
+## Licence
+
+Code is released under the [MIT licence](LICENSE). Haven's own guidance text is released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Published sources belong to their authors and are listed in the app.
+
+Built with [Lovable](https://lovable.dev/projects/459a7b0b-6e5b-4e1e-9cfa-f473e0a0b5d8).
