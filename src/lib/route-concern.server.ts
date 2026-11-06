@@ -18,7 +18,8 @@ If you cannot tell, choose category "unsure" and confidence "low". When unsure b
 Return JSON only, exactly this shape:
 {"category":"sexual"|"physical"|"grooming"|"online"|"behaviour"|"unsure","emergency":"danger"|"assault"|"self_harm"|"none","confidence":"high"|"medium"|"low"}`;
 
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const AI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+const DEFAULT_MODEL = "gemini-3.8-flash";
 const AI_TIMEOUT_MS = 10_000;
 
 type Fetcher = typeof fetch;
@@ -30,10 +31,9 @@ async function askModel(key: string, text: string, fetcher: Fetcher): Promise<st
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "X-Lovable-AIG-SDK": "fetch",
     },
     body: JSON.stringify({
-      model: "google/gemini-3-flash-preview",
+      model: process.env["GEMINI_MODEL"] || DEFAULT_MODEL,
       stream: true,
       response_format: { type: "json_object" },
       messages: [

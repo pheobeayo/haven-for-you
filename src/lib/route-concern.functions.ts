@@ -12,5 +12,5 @@ export const routeConcern = createServerFn({ method: "POST" })
     return { text };
   })
   .handler(async ({ data }): Promise<RoutedConcern> => {
-    return routeConcernText(data.text, process.env["LOVABLE_API_KEY"]);
+    return routeConcernText(data.text, process.env["GEMINI_API_KEY"]);
   });

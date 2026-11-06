@@ -14,7 +14,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthContext } from "@/hooks/use-auth";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LangProvider } from "../lib/lang";
 import { AppFooter } from "../components/AppFooter";
 
@@ -43,9 +42,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -128,11 +124,17 @@ function RootComponent() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    // Getting help must still work if the account service is not configured.
+    try {
+      const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      });
+      return () => data.subscription.unsubscribe();
+    } catch {
       setLoading(false);
-    });
-    return () => data.subscription.unsubscribe();
+      return undefined;
+    }
   }, []);
 
   return (
