@@ -20,7 +20,7 @@ function Organisations() {
   const t = useT();
   const heading = "text-2xl font-extrabold text-primary";
   return (
-    <HelpPage title={t("Work with Haven", "Work with Haven")}>
+    <HelpPage art="routes" title={t("Work with Haven", "Work with Haven")}>
       <p>
         {t(
           "Haven is a working test version. We are looking for partners to help us make it safe for real use.",

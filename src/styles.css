@@ -172,3 +172,93 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* Side pictures move slowly, so they stay calm beside sensitive content. */
+:root {
+  --art-line: #4450a3;
+}
+.art-fade {
+  animation: art-fade 7s ease-in-out infinite;
+  animation-delay: var(--art-delay, 0ms);
+}
+.art-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: art-glow 5s ease-in-out infinite;
+}
+.art-spin-a,
+.art-spin-b {
+  transform-origin: 200px 320px;
+  animation: art-spin 90s linear infinite;
+}
+.art-spin-b {
+  animation-direction: reverse;
+  animation-duration: 120s;
+}
+.art-travel {
+  stroke-dasharray: 26 500;
+  animation: art-travel 5s linear infinite;
+  animation-delay: var(--art-delay, 0ms);
+}
+.art-thread-a,
+.art-thread-b {
+  animation: art-thread 9s ease-in-out infinite alternate;
+}
+.art-thread-b {
+  animation-direction: alternate-reverse;
+}
+@keyframes art-fade {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+@keyframes art-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+@keyframes art-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes art-travel {
+  from {
+    stroke-dashoffset: 526;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes art-thread {
+  from {
+    transform: translateX(-36px);
+  }
+  to {
+    transform: translateX(36px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .art-fade,
+  .art-glow,
+  .art-spin-a,
+  .art-spin-b,
+  .art-travel,
+  .art-thread-a,
+  .art-thread-b {
+    animation: none;
+  }
+  .art-fade {
+    opacity: 0.6;
+  }
+}

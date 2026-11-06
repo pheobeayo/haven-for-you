@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { AppHeader } from "@/components/AppHeader";
+import { SideArt, type ArtVariant } from "@/components/haven/SideArt";
 
 export const inputClass =
   "tap w-full rounded-md border-2 border-input bg-card px-3 text-lg focus:border-ring focus:outline-none";
@@ -7,23 +8,26 @@ export const inputClass =
 export function AuthShell({
   title,
   intro,
+  art = "doorway",
   children,
 }: {
   title: string;
   intro?: string;
+  art?: ArtVariant;
   children: ReactNode;
 }) {
   return (
     <div className="min-h-screen pb-12">
       <AppHeader />
-      <main className="container-app py-8 md:py-12">
-        <div className="max-w-md">
+      <main className="container-app grid gap-16 py-8 md:py-12 lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
+        <div className="min-w-0">
           <h1 className="text-3xl font-extrabold leading-tight text-primary md:text-4xl">
             {title}
           </h1>
           {intro && <p className="mt-3 text-lg leading-relaxed">{intro}</p>}
           <div className="mt-6">{children}</div>
         </div>
+        <SideArt variant={art} />
       </main>
     </div>
   );
