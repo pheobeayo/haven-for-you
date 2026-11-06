@@ -17,6 +17,10 @@ describe("emergency detection without AI", () => {
     ["She said she wants to die", "self_harm"],
     ["The boy talk say e wan die", "self_harm"],
     ["He has been cutting himself at school", "self_harm"],
+    ["A girl told me she does not want to live any more", "self_harm"],
+    ["She said she no wan live again", "self_harm"],
+    ["A child did not come home from school and nobody knows where she is", "danger"],
+    ["We cannot find her since this morning", "danger"],
     ["She told me she was raped yesterday", "assault"],
     ["They defiled the child this morning", "assault"],
   ])("%s", (text, kind) => {

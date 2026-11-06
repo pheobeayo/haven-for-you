@@ -23,12 +23,12 @@ const EMERGENCY_RULES: { kind: EmergencyKind; pattern: RegExp }[] = [
   {
     kind: "self_harm",
     pattern:
-      /\b(suicid\w*|kill (her|him|my|them)sel[fv]\w*|take (her|his|my) (own )?life|end (her|his|my|their) life|(want|wants|wan|wanted) to (die|end it)|wan die|hurt(ing)? (her|him|my|them)sel[fv]\w*|cut(ting)? (her|him|my|them)sel[fv]\w*|take poison|drink poison|hurt imself|kill imself)\b/,
+      /\b(suicid\w*|(do not|does not|don't|doesn't|did not|didn't|no) (want|wan) to (live|be alive)|no wan live|better off dead|tired of living|kill (her|him|my|them)sel[fv]\w*|take (her|his|my) (own )?life|end (her|his|my|their) life|(want|wants|wan|wanted) to (die|end it)|wan die|hurt(ing)? (her|him|my|them)sel[fv]\w*|cut(ting)? (her|him|my|them)sel[fv]\w*|take poison|drink poison|hurt imself|kill imself)\b/,
   },
   {
     kind: "danger",
     pattern:
-      /\b(in danger|immediate danger|danger now|kidnap\w*|abduct\w*|is missing|has gone missing|don miss|locked (her|him|them|the child) (up|in)|lock am|has a (gun|knife)|holding a (gun|knife)|threaten\w* to kill|will kill|wan kill|bleeding|not breathing|no dey breathe|unconscious|beating (her|him|them|the child) now|dey beat am now|taken (her|him|the child) away|carry am go now)\b/,
+      /\b(in danger|(did not|didn't|has not|hasn't|never) (come|came) (back|home|back home)|no come back|(cannot|can't|could not|couldn't) find (her|him|them|the child)|(nobody|no one) knows where|no one know where|nobody know where|immediate danger|danger now|kidnap\w*|abduct\w*|is missing|has gone missing|don miss|locked (her|him|them|the child) (up|in)|lock am|has a (gun|knife)|holding a (gun|knife)|threaten\w* to kill|will kill|wan kill|bleeding|not breathing|no dey breathe|unconscious|beating (her|him|them|the child) now|dey beat am now|taken (her|him|the child) away|carry am go now)\b/,
   },
 ];
 
