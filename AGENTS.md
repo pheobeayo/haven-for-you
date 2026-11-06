@@ -10,14 +10,13 @@
 <!-- LOVABLE:END -->
 
 ## Rules
-- Use the shared WelcomeHero for account entry and the authenticated home; keep promotional presentation separate from account and checking logic.
-- AI scanning lives in `src/lib/scan.functions.ts` with authenticated createServerFn middleware — keeps the key server-side and rejects signed-out callers.
-- The AI result JSON is validated server-side with one retry; errors return `{ok:false, code, message}` instead of throwing so the UI can show friendly text.
-- Screenshots are compressed in the browser and sent inline, never stored — saves data on slow phones and avoids keeping sensitive images.
-- Scan history is saved client-side into `scans` under RLS only when signed in.
-- Mount the shared footer after the root Outlet inside LangProvider so every content page shares navigation and language state.
-- Help content lives in separate leaf routes using HelpPage; footer links to existing home sections use stable section IDs to avoid duplicating those sections.
-- Weekly trends come from anonymous scan_events (verdict, scam type, date only), written server-side after every successful authenticated scan to avoid retaining message content.
-- App content routes live under the client-only authenticated layout; only account entry/recovery is public, so direct links also require sign-in.
-- The root owns the single auth-state listener and shared account context; sign-out cancels queries, clears cache, and replaces navigation with account entry to prevent stale private views.
-- Profiles store user-facing display names with own-row policies and an Auth signup trigger; privileges never come from profile metadata.
+- Haven is for adults worried about a child. Keep the app usable with no account, on a 360px phone and on slow data.
+- All safety advice lives in `src/content/guidance.ts`. AI may only pick labels. Never show text written by a model.
+- Rules in `src/lib/triage.ts` must work with no AI. AI may raise a concern to an emergency, but never clear one the rules found.
+- Never add image, file or camera input. `src/test/content.test.ts` enforces this.
+- Never store, log or send a concern anywhere except the routing call in `src/lib/route-concern.server.ts`. Keep the flow in memory on the `/` route so browser history shows nothing about a concern.
+- Keep `confirmedOn` null until a person has called the contact and confirmed the details.
+- Every guidance change needs English and Pidgin, and a source or a note in `docs/content-review.md`.
+- Keep the review notice on every page until a child protection professional has approved the content.
+- Red is for emergencies only. Keep Leave now visible on every screen.
+- Mount the shared footer after the root Outlet inside LangProvider so every page shares navigation and language state.
