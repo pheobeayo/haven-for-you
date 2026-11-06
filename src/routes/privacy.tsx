@@ -34,8 +34,8 @@ function Privacy() {
         <h2 className={heading}>{pcm ? "Where your words dey go" : "Where your words go"}</h2>
         <p className="mt-2">
           {pcm
-            ? "If you write wetin you notice, Haven go first remove phone number and email, then send di rest to AI service make e choose guidance. If you choose from di list, your words no go anywhere. So no write anybody name."
-            : "If you write what you noticed, Haven removes phone numbers and email addresses, then sends the rest to an AI service to choose the guidance. If you choose from the list, nothing you write is sent. Please do not write anyone's name."}
+            ? "If you write wetin you notice, Haven go first remove phone number and email, then send di rest to Google Gemini AI service make e choose guidance. If you choose from di list, your words no go anywhere. So no write anybody name."
+            : "If you write what you noticed, Haven removes phone numbers and email addresses, then sends the rest to Google's Gemini AI service to choose the guidance. If you choose from the list, nothing you write is sent. Please do not write anyone's name."}
         </p>
       </section>
       <section>

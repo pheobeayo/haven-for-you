@@ -33,10 +33,17 @@ bun run dev
 bun run test
 ```
 
-AI routing needs `LOVABLE_API_KEY` on the server. Without it, Haven uses the rules.
+Copy `.env.example` to `.env` for local work. Without `GEMINI_API_KEY`, Haven uses its rules. Without the Supabase values, accounts are off, but getting help still works.
+
+## Deploy to Vercel
+
+1. Create a Supabase project. Haven needs no tables, because account details are stored in Supabase Auth.
+2. In Supabase, set the Site URL to your Vercel address, and add `<your address>/**` to the redirect URLs.
+3. Create a Gemini API key with billing turned on. Google's free tier must not receive sensitive information.
+4. Import this repository at vercel.com/new and keep the TanStack Start preset.
+5. Add every variable in `.env.example`, then deploy. `GEMINI_MODEL` is optional.
 
 ## Licence
 
 Code is released under the [MIT licence](LICENSE). Haven's own guidance text is released under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Published sources belong to their authors and are listed in the app.
 
-Built with [Lovable](https://lovable.dev/projects/459a7b0b-6e5b-4e1e-9cfa-f473e0a0b5d8).
