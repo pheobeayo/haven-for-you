@@ -19,5 +19,5 @@
 - Keep `confirmedOn` null until a person has called the contact and confirmed the details.
 - Every guidance change needs English and Pidgin, and a source or a note in `docs/content-review.md`.
 - Keep the review notice on every page until a child protection professional has approved the content.
-- Red is for emergencies only. Keep Leave now visible on every screen.
+- Red is for emergencies only. Keep Leave now in the footer of every page.
 - Mount the shared footer after the root Outlet inside LangProvider so every page shares navigation and language state.

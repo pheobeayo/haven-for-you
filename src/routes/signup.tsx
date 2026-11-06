@@ -72,6 +72,7 @@ function SignUp() {
   if (sent) {
     return (
       <AuthShell
+        art="circle"
         title={t("Check your email", "Check your email")}
         intro={t(
           "Open the link we sent you to confirm your account.",
@@ -87,6 +88,7 @@ function SignUp() {
 
   return (
     <AuthShell
+      art="circle"
       title={t("Create a frontline account", "Open frontline account")}
       intro={t(
         "For teachers, health workers and others who support children. You do not need an account to get help from Haven.",

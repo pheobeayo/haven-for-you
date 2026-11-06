@@ -19,7 +19,7 @@ function Safety() {
   const t = useT();
   const heading = "text-2xl font-extrabold text-primary";
   return (
-    <HelpPage title={t("Our safety approach", "How we dey handle safety")}>
+    <HelpPage art="weave" title={t("Our safety approach", "How we dey handle safety")}>
       <p>
         {t(
           "Haven deals with sensitive situations, so safety rules shape every part of it. Haven is still a test version and its guidance is pending professional review.",
@@ -70,8 +70,8 @@ function Safety() {
           </li>
           <li>
             {t(
-              "Leave now exits to another site straight away.",
-              "Comot now dey carry you go another site sharp sharp.",
+              "Leave now, in the footer of every page, exits to another site straight away.",
+              "Comot now, for di bottom of every page, dey carry you go another site sharp sharp.",
             )}
           </li>
         </ul>

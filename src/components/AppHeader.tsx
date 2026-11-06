@@ -5,11 +5,6 @@ import { HavenMark } from "@/components/HavenMark";
 import { useAuth } from "@/hooks/use-auth";
 import { useLang, useT } from "@/lib/lang";
 
-/** Leaves at once and replaces this page in the tab's back history. */
-function leaveNow() {
-  window.location.replace("https://www.google.com/search?q=weather+today");
-}
-
 export function AppHeader() {
   const { lang, setLang } = useLang();
   const { user } = useAuth();
@@ -53,14 +48,6 @@ export function AppHeader() {
               className="min-h-11 px-1.5 text-sm font-bold text-primary underline underline-offset-4 sm:px-2"
             >
               {lang === "en" ? "Pidgin" : "English"}
-            </button>
-            <button
-              type="button"
-              onClick={leaveNow}
-              className="inline-flex min-h-11 shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-primary px-2 text-sm font-bold text-primary-foreground"
-            >
-              <X className="hidden h-4 w-4 sm:block" aria-hidden />
-              {t("Leave now", "Comot now")}
             </button>
             <button
               type="button"

@@ -60,7 +60,7 @@ function Terms() {
     ],
   ];
   return (
-    <HelpPage title={t("Terms of use", "Terms of use")}>
+    <HelpPage art="weave" title={t("Terms of use", "Terms of use")}>
       {items.map(([title, body]) => (
         <section key={title}>
           <h2 className="text-xl font-bold text-primary">{title}</h2>

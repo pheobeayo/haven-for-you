@@ -3,6 +3,11 @@ import { HavenMark } from "@/components/HavenMark";
 import { useT } from "@/lib/lang";
 import { COMPANY_NAME } from "@/lib/site";
 
+/** Leaves at once and replaces this page in the tab's back history. */
+function leaveNow() {
+  window.location.replace("https://www.google.com/search?q=weather+today");
+}
+
 export function AppFooter() {
   const t = useT();
   const linkClass =
@@ -55,10 +60,19 @@ export function AppFooter() {
         </nav>
       </div>
       <div className="border-t border-footer-divider">
-        <p className="container-app py-4 text-sm">
-          {t("If a child is in danger now, call 112.", "If pikin dey for danger now, call 112.")} ©
-          2026 {COMPANY_NAME}
-        </p>
+        <div className="container-app flex flex-wrap items-center justify-between gap-3 py-4">
+          <p className="text-sm">
+            {t("If a child is in danger now, call 112.", "If pikin dey for danger now, call 112.")}{" "}
+            © 2026 {COMPANY_NAME}
+          </p>
+          <button
+            type="button"
+            onClick={leaveNow}
+            className="min-h-11 rounded-md border-2 border-white px-4 text-sm font-bold"
+          >
+            {t("Leave now", "Comot now")}
+          </button>
+        </div>
       </div>
     </footer>
   );

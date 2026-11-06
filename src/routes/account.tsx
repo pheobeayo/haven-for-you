@@ -78,6 +78,7 @@ function Account() {
 
   return (
     <AuthShell
+      art="circle"
       title={name ? t(`Welcome, ${name}`, `Welcome, ${name}`) : t("My account", "My account")}
       intro={t(
         "Your account holds only these details. Concerns you enter in Haven are never saved here or linked to you.",

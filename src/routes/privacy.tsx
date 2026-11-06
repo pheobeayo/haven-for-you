@@ -19,7 +19,7 @@ function Privacy() {
   const pcm = useLang().lang === "pcm";
   const heading = "text-xl font-bold text-primary";
   return (
-    <HelpPage title={pcm ? "Your privacy" : "Your privacy"}>
+    <HelpPage art="weave" title={pcm ? "Your privacy" : "Your privacy"}>
       <section>
         <h2 className={heading}>
           {pcm ? "We no dey save wetin you write" : "We do not save what you write"}
@@ -54,8 +54,8 @@ function Privacy() {
         </h2>
         <p className="mt-2">
           {pcm
-            ? "Press Comot now to leave Haven sharp sharp. Your browser fit still show say you visit Haven, so clear your history if e safe to do am."
-            : "Press Leave now to go to another site straight away. Your browser may still show that you visited Haven, so clear your history if it is safe to do so."}
+            ? "Press Comot now for di bottom of di page to leave Haven sharp sharp. Your browser fit still show say you visit Haven, so clear your history if e safe to do am."
+            : "Press Leave now at the bottom of the page to go to another site straight away. Your browser may still show that you visited Haven, so clear your history if it is safe to do so."}
         </p>
       </section>
     </HelpPage>

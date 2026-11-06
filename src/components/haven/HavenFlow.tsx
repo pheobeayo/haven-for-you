@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronRight, Loader2, Siren } from "lucide-react";
 import { AdirePanel } from "@/components/haven/AdirePanel";
 import { GuidanceView } from "@/components/haven/GuidanceView";
 import { LandingSections } from "@/components/haven/LandingSections";
+import { SideArt } from "@/components/haven/SideArt";
 import {
   CATEGORIES,
   EMERGENCIES,
@@ -188,8 +189,8 @@ export function HavenFlow() {
           </div>
         </section>
 
-        <main className="container-app py-8 md:py-10">
-          <div className="max-w-3xl">
+        <main className="container-app grid gap-12 py-8 md:py-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <div className="min-w-0">
             {view.notice === "choose" && (
               <p role="status" className="mb-4 rounded-md bg-soon-soft p-3 font-bold text-soon">
                 {pcm
@@ -222,6 +223,7 @@ export function HavenFlow() {
               ))}
             </ul>
           </div>
+          <SideArt variant="routes" />
         </main>
         <LandingSections />
       </>
@@ -240,8 +242,10 @@ export function HavenFlow() {
   );
 
   return (
-    <main className="container-app py-5 md:py-8">
-      <div ref={stepRef} className="max-w-3xl">
+    <main
+      className={`container-app grid gap-12 py-5 md:py-8 ${view.name === "questions" ? "lg:grid-cols-[minmax(0,1fr)_22rem]" : ""}`}
+    >
+      <div ref={stepRef} className="min-w-0 max-w-3xl">
         {view.name === "questions" && (
           <QuestionStep
             key={`${view.category}-${view.index}`}
@@ -279,6 +283,7 @@ export function HavenFlow() {
           </button>
         )}
       </div>
+      {view.name === "questions" && <SideArt variant="doorway" />}
     </main>
   );
 }

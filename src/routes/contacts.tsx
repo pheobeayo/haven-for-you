@@ -19,7 +19,7 @@ export const Route = createFileRoute("/contacts")({
 function Contacts() {
   const pcm = useLang().lang === "pcm";
   return (
-    <HelpPage title={pcm ? "Who fit help" : "Who can help"}>
+    <HelpPage art="routes" title={pcm ? "Who fit help" : "Who can help"}>
       <p>
         {pcm
           ? "Choose where you dey. We dey confirm each contact, so check di label before you depend on am."
