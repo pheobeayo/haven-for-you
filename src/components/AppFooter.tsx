@@ -1,28 +1,27 @@
 import { Link } from "@tanstack/react-router";
-import { HavenMark } from "@/components/HavenMark";
+import { HavenLogo } from "@/components/haven/HavenLogo";
 import { useT } from "@/lib/lang";
 import { COMPANY_NAME, PRIVACY_NOTICE_URL } from "@/lib/site";
 
-/** Leaves at once and replaces this page in the tab's back history. */
-function leaveNow() {
-  window.location.replace("https://www.google.com/search?q=weather+today");
-}
+/** Same inbox as "Work with us" on the landing page. */
+const CONTACT_EMAIL = "pheobeayo@gmail.com";
 
 export function AppFooter() {
   const t = useT();
+  // TanStack sets data-status="active" on the current link.
   const linkClass =
-    "flex min-h-11 items-center underline underline-offset-4 hover:text-accent focus-visible:outline-accent";
-  const heading = "mb-1 font-extrabold text-accent";
+    "flex min-h-11 items-center gap-2 text-[#e8efea] hover:text-(--hv-apricot) data-[status=active]:font-semibold data-[status=active]:text-(--hv-apricot) data-[status=active]:before:h-1.5 data-[status=active]:before:w-1.5 data-[status=active]:before:rounded-full data-[status=active]:before:bg-(--hv-apricot) data-[status=active]:before:content-['']";
+
   return (
-    <footer className="on-indigo bg-footer text-footer-foreground">
-      <div className="container-app grid gap-8 py-8 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
-        <div>
-          <HavenMark />
-          <p className="mt-3 max-w-sm leading-relaxed">
-            {t(
-              "Help for adults who are worried about a child. Haven is not the police, a doctor or a child protection service.",
-              "Help for adults wey dey worry about pikin. Haven no be police, doctor or child protection service.",
-            )}
+    <footer className="hv-body bg-(--hv-forest) text-(--hv-on-dark)">
+      <div className="mx-auto w-[90%] py-8">
+        <div className="flex flex-wrap items-center justify-between gap-5 border-b border-white/15 pb-9">
+          <p className="hv-display text-2xl leading-tight text-(--hv-mist) lg:text-[32px] md:text-[32px]">
+            {t("If a child is in danger now,", "If pikin dey for danger now,")}{" "}
+            <a href="tel:112" className="text-(--hv-apricot) underline underline-offset-4">
+              {t("call 112", "call 112")}
+            </a>
+            .
           </p>
         </div>
         <nav aria-label={t("Get help", "Find help")}>
@@ -73,6 +72,8 @@ export function AppFooter() {
             {t("Leave now", "Comot now")}
           </button>
         </div>
+
+        <p className="mt-8 text-[13px] text-[var(--hv-on-dark-muted)]">© 2026 {COMPANY_NAME}</p>
       </div>
     </footer>
   );

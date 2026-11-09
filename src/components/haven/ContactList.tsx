@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, MapPin, Phone } from "lucide-react";
+import { BadgeCheck, CircleDashed, ExternalLink, MapPin, Phone } from "lucide-react";
 import {
   COVERAGE_LABEL,
   contactsFor,
@@ -11,24 +11,56 @@ import { useLang } from "@/lib/lang";
 
 const PLACES: Coverage[] = ["nationwide", "fct", "lagos"];
 
-function ContactRow({ contact }: { contact: Contact }) {
+function ContactCard({ contact }: { contact: Contact }) {
   const { lang } = useLang();
   const pcm = lang === "pcm";
+  // The national emergency line gets the dark card, so it stands apart from the rest.
+  const emergency = contact.phone?.dial === "112";
+
   return (
-    <li className="py-4">
-      <h3 className="text-lg font-bold leading-snug">{contact.name}</h3>
-      <p className="mt-1 max-w-prose leading-snug text-muted-foreground">{contact.what[lang]}</p>
+    <li
+      className={`flex flex-col rounded-[22px] p-6 sm:p-7 ${emergency ? "bg-(--hv-forest) text-(--hv-mist) md:col-span-2" : "border-[1.5px] border-(--hv-line) bg-white text-(--hv-forest)"}`}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <h3 className="min-w-0 text-lg font-semibold leading-snug">{contact.name}</h3>
+        {contact.confirmedOn ? (
+          <span
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold ${emergency ? "bg-white/10 text-[var(--hv-apricot)]" : "bg-[var(--hv-sage)] text-[var(--hv-eucalyptus-deep)]"}`}
+          >
+            <BadgeCheck className="h-4 w-4" aria-hidden />
+            {pcm ? "Haven don confirm am" : "Confirmed by Haven"}
+          </span>
+        ) : (
+          <span
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold ${emergency ? "bg-white/10 text-[var(--hv-on-dark)]" : "bg-[var(--soon-soft)] text-[var(--soon)]"}`}
+          >
+            <CircleDashed className="h-4 w-4" aria-hidden />
+            {pcm ? "Haven never confirm am" : "Not yet confirmed"}
+          </span>
+        )}
+      </div>
+
+      <p
+        className={`mt-2 max-w-prose leading-snug ${emergency ? "text-[var(--hv-on-dark)]" : "text-[var(--hv-ink-soft)]"}`}
+      >
+        {contact.what[lang]}
+      </p>
+
       {contact.address && (
-        <p className="mt-2 flex gap-2 leading-snug">
-          <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
+        <p className="mt-3 flex gap-2 text-[15px] leading-snug">
+          <MapPin
+            className={`mt-0.5 h-4 w-4 shrink-0 ${emergency ? "text-[var(--hv-apricot)]" : "text-[var(--hv-eucalyptus)]"}`}
+            aria-hidden
+          />
           {contact.address}
         </p>
       )}
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+
+      <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
         {contact.phone && (
           <a
             href={`tel:${contact.phone.dial}`}
-            className="tap inline-flex items-center gap-2 rounded-md bg-primary px-4 text-lg font-bold text-primary-foreground"
+            className={`inline-flex min-h-12 items-center gap-2.5 rounded-full px-5 text-lg font-semibold tabular-nums transition-transform hover:-translate-y-px ${emergency ? "bg-[var(--hv-apricot)] text-[var(--hv-forest)]" : "bg-[var(--hv-eucalyptus)] text-white"}`}
           >
             <Phone className="h-5 w-5" aria-hidden />
             {contact.phone.display}
@@ -39,16 +71,11 @@ function ContactRow({ contact }: { contact: Contact }) {
             href={contact.url}
             target="_blank"
             rel="noreferrer"
-            className="tap inline-flex items-center gap-2 rounded-md border-2 border-primary px-4 font-bold text-primary"
+            className={`inline-flex min-h-12 items-center gap-2 rounded-full border-[1.5px] px-5 font-semibold transition-colors ${emergency ? "border-white/30 text-[var(--hv-mist)] hover:border-white" : "border-[var(--hv-line)] text-[var(--hv-forest)] hover:border-[var(--hv-eucalyptus)]"}`}
           >
             {pcm ? "Open website" : "Open website"}
-            <ExternalLink className="h-5 w-5" aria-hidden />
+            <ExternalLink className="h-4 w-4" aria-hidden />
           </a>
-        )}
-        {!contact.confirmedOn && (
-          <span className="text-sm font-bold text-soon">
-            {pcm ? "Haven never confirm dis contact" : "Not yet confirmed by Haven"}
-          </span>
         )}
       </div>
     </li>
@@ -66,28 +93,35 @@ export function ContactList({
   const pcm = lang === "pcm";
   const [place, setPlace] = useState<Coverage>(initialPlace);
   const contacts = contactsFor(topics, place);
+
   return (
-    <div>
-      <div
-        role="group"
-        aria-label={pcm ? "Where you dey" : "Where you are"}
-        className="flex flex-wrap gap-2"
-      >
-        {PLACES.map((p) => (
-          <button
-            key={p}
-            type="button"
-            aria-pressed={place === p}
-            onClick={() => setPlace(p)}
-            className={`min-h-11 rounded-md border-2 px-3 font-bold ${place === p ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-foreground"}`}
-          >
-            {COVERAGE_LABEL[p][lang]}
-          </button>
-        ))}
+    <div className="hv-body">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <p id="place-label" className="font-semibold text-[var(--hv-forest)]">
+          {pcm ? "Where you dey?" : "Where are you?"}
+        </p>
+        <div
+          role="group"
+          aria-labelledby="place-label"
+          className="inline-flex flex-wrap gap-1 rounded-full bg-white p-1 shadow-[inset_0_0_0_1.5px_var(--hv-line)]"
+        >
+          {PLACES.map((p) => (
+            <button
+              key={p}
+              type="button"
+              aria-pressed={place === p}
+              onClick={() => setPlace(p)}
+              className={`min-h-10 rounded-full px-4 text-[15px] font-semibold transition-colors ${place === p ? "bg-[var(--hv-forest)] text-white" : "text-[var(--hv-forest)] hover:bg-[var(--hv-sage)]"}`}
+            >
+              {COVERAGE_LABEL[p][lang]}
+            </button>
+          ))}
+        </div>
       </div>
-      <ul className="mt-2 divide-y divide-border">
+
+      <ul aria-live="polite" className="mt-6 grid gap-4 md:grid-cols-2">
         {contacts.map((c) => (
-          <ContactRow key={c.id} contact={c} />
+          <ContactCard key={c.id} contact={c} />
         ))}
       </ul>
     </div>

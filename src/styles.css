@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  --font-sans: "Figtree", "Atkinson Hyperlegible Next", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);
@@ -41,43 +41,74 @@
   --color-footer-divider: var(--footer-divider);
 }
 
-/* Haven's palette comes from adire, the indigo resist-dyed cloth of south-west
-   Nigeria. Indigo carries the brand. Marigold marks the main action. Red is
-   kept for emergencies, so it always means the same thing. */
+/* Haven's palette is a quiet room: forest and eucalyptus greens, soft mist,
+   and a warm apricot light. Ember is kept for danger alone, so it always
+   means the same thing. */
 :root {
   --radius: 0.5rem;
-  --background: #f3f4fb;
-  --foreground: #141a3f;
+  --background: #f3f5f1;
+  --foreground: #1f3b34;
   --card: #ffffff;
-  --card-foreground: #141a3f;
+  --card-foreground: #1f3b34;
   --popover: #ffffff;
-  --popover-foreground: #141a3f;
-  --primary: #232c6b;
+  --popover-foreground: #1f3b34;
+  --primary: #2f6356;
   --primary-foreground: #ffffff;
-  --secondary: #e2e5f5;
-  --secondary-foreground: #141a3f;
-  --muted: #e9ebf7;
-  --muted-foreground: #464e78;
-  --accent: #f6bd3f;
-  --accent-foreground: #141a3f;
-  --destructive: #b3261e;
+  --secondary: #dde8e1;
+  --secondary-foreground: #1f3b34;
+  --muted: #e6eee9;
+  --muted-foreground: #4f635d;
+  --accent: #f2c9a4;
+  --accent-foreground: #1f3b34;
+  --destructive: #a63d29;
   --destructive-foreground: #ffffff;
-  --border: #cfd3ea;
-  --input: #7f87b0;
-  --ring: #232c6b;
+  --border: #d6e0da;
+  --input: #74908a;
+  --ring: #2f6356;
 
-  --urgent: #b3261e;
-  --urgent-soft: #fce9e7;
-  --soon: #7a4b00;
-  --soon-soft: #fdf0d9;
-  --steady: #0b6157;
-  --steady-soft: #dcf2ee;
+  --urgent: #a63d29;
+  --urgent-soft: #f8e6e0;
+  --soon: #7a4510;
+  --soon-soft: #fbeee1;
+  --steady: #2f6356;
+  --steady-soft: #dde8e1;
 
-  --footer: #171e4d;
+  --footer: #1f3b34;
   --footer-foreground: #ffffff;
-  --footer-divider: #3a4280;
+  --footer-divider: #3a5a51;
 
-  --adire-line: #3d4792;
+  --adire-line: #3a5a51;
+
+  --hv-forest: #1f3b34;
+  --hv-eucalyptus: #3e7a6a;
+  --hv-eucalyptus-deep: #2f6356;
+  --hv-sage: #dde8e1;
+  --hv-sage-soft: #e6eee9;
+  --hv-mist: #f3f5f1;
+  --hv-line: #d6e0da;
+  --hv-apricot: #f2c9a4;
+  --hv-apricot-deep: #e9a877;
+  --hv-ember: #a63d29;
+  --hv-ember-tint: #f8e6e0;
+  --hv-ember-line: #e7bfb3;
+  --hv-ink-soft: #4f635d;
+  --hv-ink-muted: #5e716b;
+  --hv-on-dark: #c9dad3;
+  --hv-on-dark-muted: #a9c2b8;
+  --hv-font-display: "Fraunces", Georgia, serif;
+  --hv-font-body: "Figtree", "Atkinson Hyperlegible Next", system-ui, sans-serif;
+}
+
+.hv-body {
+  font-family: var(--hv-font-body);
+}
+.hv-display {
+  font-family: var(--hv-font-display);
+  font-optical-sizing: auto;
+}
+.hv-body :focus-visible {
+  outline: 3px solid var(--hv-apricot-deep);
+  outline-offset: 3px;
 }
 
 @layer base {
@@ -86,6 +117,8 @@
   }
   html {
     font-size: 17px;
+    /* Anchor jumps land below the sticky header. */
+    scroll-padding-top: 5.5rem;
   }
   body {
     background-color: var(--color-background);
@@ -112,7 +145,7 @@
   min-height: 3.25rem;
 }
 
-@utility container-app {
+/* @utility container-app {
   width: 100%;
   max-width: 1120px;
   margin-inline: auto;
@@ -120,11 +153,12 @@
   @media (width >= 768px) {
     padding-inline: 2rem;
   }
-}
+} */
 
+/* clip, not hidden: hidden turns body into a scroll box and breaks the sticky header. */
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Lines the hero's text up with the header and the page content. */
@@ -175,7 +209,7 @@ body {
 
 /* Side pictures move slowly, so they stay calm beside sensitive content. */
 :root {
-  --art-line: #4450a3;
+  --art-line: #5d8b7e;
 }
 .art-fade {
   animation: art-fade 7s ease-in-out infinite;
