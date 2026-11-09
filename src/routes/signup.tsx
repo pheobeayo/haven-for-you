@@ -10,7 +10,7 @@ import {
 } from "@/components/haven/AuthForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/lang";
-import { NIGERIAN_STATES, WORK_ROLES } from "@/lib/site";
+import { NIGERIAN_STATES, PRIVACY_NOTICE_URL, WORK_ROLES } from "@/lib/site";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -159,9 +159,14 @@ function SignUp() {
               {t("terms", "terms")}
             </Link>
             {t(" and ", " and ")}
-            <Link to="/privacy" className="font-bold underline underline-offset-2">
+            <a
+              href={PRIVACY_NOTICE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="font-bold underline underline-offset-2"
+            >
               {t("privacy notice", "privacy notice")}
-            </Link>
+            </a>
             .
           </span>
         </label>

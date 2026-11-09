@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { HavenMark } from "@/components/HavenMark";
 import { useT } from "@/lib/lang";
-import { COMPANY_NAME } from "@/lib/site";
+import { COMPANY_NAME, PRIVACY_NOTICE_URL } from "@/lib/site";
 
 /** Leaves at once and replaces this page in the tab's back history. */
 function leaveNow() {
@@ -51,9 +51,9 @@ export function AppFooter() {
         </nav>
         <nav aria-label={t("Legal", "Legal")}>
           <p className={heading}>{t("Legal", "Legal")}</p>
-          <Link to="/privacy" className={linkClass}>
-            {t("Privacy", "Privacy")}
-          </Link>
+          <a href={PRIVACY_NOTICE_URL} target="_blank" rel="noreferrer" className={linkClass}>
+            {t("Privacy notice (PDF)", "Privacy notice (PDF)")}
+          </a>
           <Link to="/terms" className={linkClass}>
             {t("Terms of use", "Terms of use")}
           </Link>
