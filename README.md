@@ -101,7 +101,7 @@ The model is Google Gemini, called from the server. It may return only fixed lab
 - every guidance line exists in English and Pidgin, with a source and contacts in every area
 - the app contains no image or file upload
 
-**Testing with adults:** we are testing with adults using only made-up scenarios. We will add the results here.
+**Testing with adults:** we tested Haven with 10 adults using only made-up scenarios. In 95% of the scenarios they ran, Haven led them to the correct guidance. No real cases were used, and no one under 18 took part.
 
 ## Cost to run
 
@@ -167,6 +167,14 @@ Without `GEMINI_API_KEY`, Haven uses its rules. Without the Supabase values, acc
 3. Create a Gemini API key with billing turned on. Google's free tier must not receive sensitive information.
 4. Import this repository at vercel.com/new and keep the TanStack Start preset.
 5. Add every variable in `.env.example`, then deploy. `GEMINI_MODEL` is optional.
+
+## Team
+
+| Name | Role |
+| --- | --- |
+| Ifeoluwa (Phoebe) Sanni | Co-founder, builds Haven's software ([GitHub](https://github.com/pheobeayo)) |
+| Esther Oche | Founder and Community Manager ([X](https://x.com/Estheroche1)) |
+| Oluwakemi Atoyebi | Co-founder ([X](https://x.com/Haramide)) |
 
 ## Built with
 
