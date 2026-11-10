@@ -7,6 +7,7 @@ import {
   SelectField,
   SubmitButton,
   authErrorMessage,
+  connectionErrorMessage,
 } from "@/components/haven/AuthForm";
 import { AccountTypeSwitch } from "@/components/haven/AccountTypeSwitch";
 import { useAuth } from "@/hooks/use-auth";
@@ -86,13 +87,8 @@ function SignUp() {
       if (error) setMessage(authErrorMessage(error.message, t));
       else if (data.session) void nav({ to: "/account" });
       else setSent(true);
-    } catch {
-      setMessage(
-        t(
-          "Connection problem. Check your data and try again.",
-          "Network wahala. Check your data and try again.",
-        ),
-      );
+    } catch (error) {
+      setMessage(connectionErrorMessage(error, t));
     } finally {
       setBusy(false);
     }

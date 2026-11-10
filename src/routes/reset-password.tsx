@@ -6,6 +6,7 @@ import {
   FormMessage,
   SubmitButton,
   authErrorMessage,
+  connectionErrorMessage,
 } from "@/components/haven/AuthForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/lang";
@@ -31,13 +32,8 @@ function ResetPassword() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) setMessage(authErrorMessage(error.message, t));
       else void nav({ to: "/account" });
-    } catch {
-      setMessage(
-        t(
-          "Connection problem. Check your data and try again.",
-          "Network wahala. Check your data and try again.",
-        ),
-      );
+    } catch (error) {
+      setMessage(connectionErrorMessage(error, t));
     } finally {
       setBusy(false);
     }
