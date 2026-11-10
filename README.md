@@ -4,6 +4,12 @@ Haven helps adults in Nigeria respond safely when they are worried about a child
 
 A child does not need a phone or internet access for Haven to help them.
 
+![Haven home page: "Worried about a child? Take the next safe step." with Start now and A child is in danger now buttons](docs/screenshots/home.png)
+
+Adults choose the closest situation or describe it in their own words:
+
+![Two options, "A child is being hurt" and "Something feels wrong", beside a box to write what you saw or heard](docs/screenshots/start-options.png)
+
 > **Status: test version.** The guidance is seeded from published sources and is pending review by a child protection professional. Do not use it for a real case. See [docs/content-review.md](docs/content-review.md).
 
 ## How it stays safe
