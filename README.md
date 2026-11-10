@@ -172,7 +172,6 @@ Without `GEMINI_API_KEY`, Haven uses its rules. Without the Supabase values, acc
 
 | Name | Role |
 | --- | --- |
-
 | Esther Oche | Founder and Community Manager ([X](https://x.com/Estheroche1)) |
 | Oluwakemi Atoyebi | Co-founder and Technical Mentor ([X](https://x.com/Haramide)) |
 | Ifeoluwa (Phoebe) Sanni | Co-founder and Technical Lead ([GitHub](https://github.com/pheobeayo)) |
