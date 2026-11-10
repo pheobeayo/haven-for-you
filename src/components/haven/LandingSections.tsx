@@ -38,6 +38,13 @@ export function LandingSections() {
             >
               {t("Work with us", "Work with us")}
             </a>
+            <Link
+              to="/signup"
+              search={{ type: "organisation" }}
+              className="inline-flex min-h-[52px] items-center rounded-full border-2 border-(--hv-forest) px-6 font-semibold text-(--hv-forest) transition-transform hover:-translate-y-px"
+            >
+              {t("Create an organisation account", "Open organisation account")}
+            </Link>
           </div>
         </div>
 

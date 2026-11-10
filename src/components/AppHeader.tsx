@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { HavenLogo } from "@/components/haven/HavenLogo";
+import { useAuth } from "@/hooks/use-auth";
 import { useLang, useT } from "@/lib/lang";
 
 const CONTAINER = "mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-12";
@@ -9,6 +10,7 @@ const CONTAINER = "mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-12";
 export function AppHeader() {
   const { lang, setLang } = useLang();
   const t = useT();
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   // TanStack sets data-status="active" on the current link. The apricot bar marks it.
@@ -30,6 +32,9 @@ export function AppHeader() {
         className={linkClass}
       >
         {t("For organisations", "For organisations")}
+      </Link>
+      <Link to={user ? "/account" : "/signin"} onClick={close} className={linkClass}>
+        {user ? t("My account", "My account") : t("Sign in", "Sign in")}
       </Link>
     </>
   );
@@ -74,7 +79,7 @@ export function AppHeader() {
 
           <nav
             aria-label={t("Main", "Main")}
-            className="hidden items-center gap-7 text-[15px] md:flex"
+            className="hidden items-center gap-5 text-[15px] md:flex lg:gap-7"
           >
             {links}
           </nav>
