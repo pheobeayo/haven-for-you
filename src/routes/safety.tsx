@@ -68,12 +68,6 @@ function Safety() {
               "We no dey save concerns, and dem no dey join any account.",
             )}
           </li>
-          <li>
-            {t(
-              "Leave now, in the footer of every page, exits to another site straight away.",
-              "Comot now, for di bottom of every page, dey carry you go another site sharp sharp.",
-            )}
-          </li>
         </ul>
       </section>
       <section>

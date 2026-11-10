@@ -3,11 +3,6 @@ import { HavenLogo } from "@/components/haven/HavenLogo";
 import { useT } from "@/lib/lang";
 import { COMPANY_NAME, PRIVACY_NOTICE_URL } from "@/lib/site";
 
-/** Leaves at once and replaces this page in the tab's back history. */
-function leaveNow() {
-  window.location.replace("https://www.google.com/search?q=weather+today");
-}
-
 export function AppFooter() {
   const t = useT();
   const heading = "mb-1 text-sm font-semibold text-(--hv-apricot)";
@@ -26,13 +21,6 @@ export function AppFooter() {
             </a>
             .
           </p>
-          <button
-            type="button"
-            onClick={leaveNow}
-            className="min-h-11 rounded-md border-2 border-(--hv-mist) px-4 text-sm font-bold text-(--hv-mist)"
-          >
-            {t("Leave now", "Comot now")}
-          </button>
         </div>
 
         <div className="grid gap-8 py-9 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">

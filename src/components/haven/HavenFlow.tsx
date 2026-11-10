@@ -108,7 +108,7 @@ function HeroArch({ pcm }: { pcm: boolean }) {
             {pcm ? "We build am private." : "Private by design."}
           </strong>
           <br />
-          {pcm ? "Comot now go clear dis tab." : "Leave now clears this tab."}
+          {pcm ? "We no dey save wetin you write." : "Nothing you write is saved."}
         </span>
       </div>
     </div>

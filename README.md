@@ -13,7 +13,7 @@ A child does not need a phone or internet access for Haven to help them.
 - **Emergencies can't be downgraded.** AI can raise a concern to an emergency, but it can't clear one the rules found. When the rules find an emergency, Haven shows it at once and sends nothing to AI.
 - **No images, ever.** There is no upload path in the app, and a test fails if one is added.
 - **Nothing kept.** There is no database of concerns and no logging of what people write. Optional frontline accounts hold profile details only and are never linked to a concern. Phone numbers and email addresses are removed before text goes to the AI service.
-- **Private to use.** The journey stays on one address and in memory. Leave now exits at once and replaces the page in that tab's history.
+- **Private to use.** The journey stays on one address and in memory.
 
 ## Where things live
 
