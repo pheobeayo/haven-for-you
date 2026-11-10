@@ -6,7 +6,7 @@ Haven is a free web app for mothers, caregivers, teachers, youth leaders and com
 
 A child does not need a phone or internet access for Haven to help. It supports the trusted adults already around her.
 
-- **Live app:** [haven-for-you-teal.vercel.app](https://haven-for-you-teal.vercel.app/)
+- **Live app:** [haven-for-your-child.vercel.app](https://haven-for-your-child.vercel.app/)
 - **Pitch video:** [youtu.be/A5FYHpfK_Ic](https://youtu.be/A5FYHpfK_Ic)
 - **Privacy notice:** [Google Doc](https://docs.google.com/document/d/1Jkdt7rfC2bO1h-DHmiKHYJHt04hko6l7Rx0yKkbtOtI/edit?usp=sharing)
 - **Languages:** English and Nigerian Pidgin
