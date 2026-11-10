@@ -103,6 +103,21 @@ export function SubmitButton({ busy, children }: { busy: boolean; children: Reac
   );
 }
 
+/** Explains a request that never reached the account service. */
+export function connectionErrorMessage(error: unknown, t: (en: string, pcm: string) => string) {
+  const message = error instanceof Error ? error.message : "";
+  if (message.startsWith("Missing Supabase")) {
+    return t(
+      "Accounts are not set up on this site yet. Please try again later.",
+      "Accounts never ready for dis site. Abeg try again later.",
+    );
+  }
+  return t(
+    "Haven could not reach the account service. Check your internet connection and try again.",
+    "Haven no fit reach di account service. Check your network and try again.",
+  );
+}
+
 export function authErrorMessage(message: string, t: (en: string, pcm: string) => string) {
   if (/invalid login/i.test(message))
     return t("The email or password is incorrect.", "Di email or password no correct.");
