@@ -15,6 +15,22 @@ export const WORK_ROLES = [
   "Other",
 ] as const;
 
+export const ORGANISATION_TYPES = [
+  "School",
+  "Health facility or programme",
+  "Sexual assault referral centre",
+  "NGO or charity",
+  "Faith or youth group",
+  "Government agency",
+  "Other",
+] as const;
+
+export type AccountType = "individual" | "organisation";
+
+export function accountTypeOf(value: unknown): AccountType {
+  return value === "organisation" ? "organisation" : "individual";
+}
+
 export const NIGERIAN_STATES = [
   "Abia",
   "Adamawa",

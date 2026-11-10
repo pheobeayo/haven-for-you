@@ -57,7 +57,7 @@ function Organisations() {
         </ul>
       </section>
       <section>
-        <h2 className={heading}>{t("Frontline accounts", "Frontline accounts")}</h2>
+        <h2 className={heading}>{t("Accounts", "Accounts")}</h2>
         <p className="mt-2">
           {t(
             "A free account saves your role and state, and shows contacts for your area. Anyone can use Haven without one, and no concern is ever saved to an account.",
@@ -74,9 +74,10 @@ function Organisations() {
         </Link>
         <Link
           to="/signup"
+          search={{ type: "organisation" }}
           className="tap inline-flex items-center rounded-md border-2 border-primary px-5 font-bold text-primary"
         >
-          {t("Create a frontline account", "Open frontline account")}
+          {t("Create an organisation account", "Open organisation account")}
         </Link>
       </div>
     </HelpPage>

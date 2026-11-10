@@ -7,7 +7,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteAccount } from "@/lib/account.functions";
 import { useT } from "@/lib/lang";
-import { NIGERIAN_STATES, WORK_ROLES, coverageForState } from "@/lib/site";
+import {
+  NIGERIAN_STATES,
+  ORGANISATION_TYPES,
+  WORK_ROLES,
+  accountTypeOf,
+  coverageForState,
+} from "@/lib/site";
 
 export const Route = createFileRoute("/account")({
   ssr: false,
@@ -24,6 +30,7 @@ function Account() {
   const [role, setRole] = useState("");
   const [organisation, setOrganisation] = useState("");
   const [state, setState] = useState("");
+  const isOrg = accountTypeOf(user?.user_metadata?.["account_type"]) === "organisation";
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -45,7 +52,13 @@ function Account() {
     setBusy(true);
     setNotice(null);
     const { error } = await supabase.auth.updateUser({
-      data: { display_name: name.trim(), role, organisation: organisation.trim(), state },
+      data: {
+        account_type: isOrg ? "organisation" : "individual",
+        display_name: name.trim(),
+        role,
+        organisation: organisation.trim(),
+        state,
+      },
     });
     setNotice(
       error
@@ -79,34 +92,68 @@ function Account() {
   return (
     <AuthShell
       art="circle"
-      title={name ? t(`Welcome, ${name}`, `Welcome, ${name}`) : t("My account", "My account")}
+      title={
+        isOrg && organisation
+          ? t(`Welcome, ${organisation}`, `Welcome, ${organisation}`)
+          : name
+            ? t(`Welcome, ${name}`, `Welcome, ${name}`)
+            : t("My account", "My account")
+      }
       intro={t(
         "Your account holds only these details. Concerns you enter in Haven are never saved here or linked to you.",
         "Your account hold only dis details. Wetin you enter for Haven no dey save here and e no dey join you.",
       )}
     >
       <form onSubmit={onSave} className="space-y-4">
+        <p className="rounded-md bg-secondary px-3 py-2 font-bold">
+          {isOrg
+            ? t("Organisation account", "Organisation account")
+            : t("Individual account", "Individual account")}
+        </p>
+        {isOrg && (
+          <Field
+            label={t("Organisation name", "Organisation name")}
+            required
+            maxLength={120}
+            value={organisation}
+            onChange={(e) => setOrganisation(e.target.value)}
+          />
+        )}
+        {isOrg && (
+          <SelectField
+            label={t("Type of organisation", "Type of organisation")}
+            required
+            placeholder={t("Choose a type", "Choose type")}
+            options={ORGANISATION_TYPES}
+            value={role}
+            onChange={setRole}
+          />
+        )}
         <Field
-          label={t("Your name", "Your name")}
+          label={isOrg ? t("Contact person", "Contact person") : t("Your name", "Your name")}
           required
           maxLength={80}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <SelectField
-          label={t("Your role", "Your role")}
-          required
-          placeholder={t("Choose your role", "Choose your role")}
-          options={WORK_ROLES}
-          value={role}
-          onChange={setRole}
-        />
-        <Field
-          label={t("Organisation (optional)", "Organisation (optional)")}
-          maxLength={120}
-          value={organisation}
-          onChange={(e) => setOrganisation(e.target.value)}
-        />
+        {!isOrg && (
+          <SelectField
+            label={t("Your role", "Your role")}
+            required
+            placeholder={t("Choose your role", "Choose your role")}
+            options={WORK_ROLES}
+            value={role}
+            onChange={setRole}
+          />
+        )}
+        {!isOrg && (
+          <Field
+            label={t("Organisation (optional)", "Organisation (optional)")}
+            maxLength={120}
+            value={organisation}
+            onChange={(e) => setOrganisation(e.target.value)}
+          />
+        )}
         <SelectField
           label={t("State", "State")}
           required

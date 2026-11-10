@@ -35,7 +35,7 @@ function Contact() {
       </p>
       <a
         href={`mailto:${CONTACT_EMAIL}?subject=Haven`}
-        className="tap inline-flex items-center gap-2 rounded-md bg-primary px-5 font-bold text-primary-foreground"
+        className="tap inline-flex max-w-full items-center gap-2 break-all rounded-md bg-primary px-5 font-bold text-primary-foreground"
       >
         <Mail className="h-5 w-5" aria-hidden />
         {CONTACT_EMAIL}

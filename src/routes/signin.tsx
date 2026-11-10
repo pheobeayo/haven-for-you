@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   AuthShell,
@@ -7,6 +7,7 @@ import {
   SubmitButton,
   authErrorMessage,
 } from "@/components/haven/AuthForm";
+import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useT } from "@/lib/lang";
 
@@ -18,6 +19,12 @@ export const Route = createFileRoute("/signin")({
 function SignIn() {
   const t = useT();
   const nav = useNavigate();
+  const { user, loading } = useAuth();
+
+  // Someone already signed in goes to their account instead.
+  useEffect(() => {
+    if (!loading && user) void nav({ to: "/account", replace: true });
+  }, [user, loading, nav]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -48,8 +55,8 @@ function SignIn() {
     <AuthShell
       title={t("Sign in", "Sign in")}
       intro={t(
-        "For frontline accounts. You can get help without signing in.",
-        "For frontline accounts. You fit get help without sign in.",
+        "For individual and organisation accounts. You can get help without signing in.",
+        "For individual and organisation accounts. You fit get help without sign in.",
       )}
     >
       <form onSubmit={onSubmit} className="space-y-4">
@@ -86,7 +93,7 @@ function SignIn() {
         <p>
           {t("New here? ", "You new here? ")}
           <Link to="/signup" className="font-bold text-primary underline underline-offset-4">
-            {t("Create a frontline account", "Open frontline account")}
+            {t("Create an account", "Open account")}
           </Link>
         </p>
       </div>
