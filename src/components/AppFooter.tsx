@@ -51,7 +51,7 @@ export function AppFooter() {
         <nav aria-label={t("Legal", "Legal")}>
           <p className={heading}>{t("Legal", "Legal")}</p>
           <a href={PRIVACY_NOTICE_URL} target="_blank" rel="noreferrer" className={linkClass}>
-            {t("Privacy notice (PDF)", "Privacy notice (PDF)")}
+            {t("Privacy notice", "Privacy notice")}
           </a>
           <Link to="/terms" className={linkClass}>
             {t("Terms of use", "Terms of use")}
